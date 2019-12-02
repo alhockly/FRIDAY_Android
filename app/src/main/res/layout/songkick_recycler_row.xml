@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/artistName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/code_saver"
+        android:text="Smino"
+        android:textColor="#F5F2F2"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Smino" />
+
+    <TextView
+        android:id="@+id/venueName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-113dp"
+        android:fontFamily="@font/code_saver"
+        android:text="TextView"
+        android:gravity="top"
+        android:textColor="#F5F2F2"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/artistName"
+        app:layout_constraintTop_toBottomOf="@+id/artistName"
+        tools:text="aCorsica Studios" />
+
+    <TextView
+        android:id="@+id/dateInfo"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12\nNov"
+        android:lineSpacingExtra="0dp"/>
+
+    <TextView
+        android:id="@+id/artistFeatures"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text=" + Saba, Smino"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/artistName"
+        app:layout_constraintStart_toEndOf="@+id/artistName" />
+</androidx.constraintlayout.widget.ConstraintLayout>
