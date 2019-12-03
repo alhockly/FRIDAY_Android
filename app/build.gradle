@@ -63,4 +63,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation("com.squareup.okhttp3:okhttp:4.2.2")
     implementation 'com.google.code.gson:gson:2.8.6'
+    compile(name: 'pocketsphinx-android-5prealpha-release', ext: 'aar')
 }

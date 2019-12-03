@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -27,9 +28,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.friday_android.databinding.ActivityMainBinding;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Locale;
-
+import edu.cmu.pocketsphinx.Assets;
+import edu.cmu.pocketsphinx.Hypothesis;
+import edu.cmu.pocketsphinx.RecognitionListener;
+import edu.cmu.pocketsphinx.SpeechRecognizer;
+import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 
 /**
@@ -51,7 +58,7 @@ import java.util.Locale;
  *
  * @see <a href="https://github.com/androidthings/contrib-drivers#readme">https://github.com/androidthings/contrib-drivers#readme</a>
  */
-public class MainActivity extends Activity implements IModifyUI{
+public class MainActivity extends Activity implements IModifyUI, RecognitionListener{
     TimeBroadcastReceiver iTimeBroadcastReceiver;
     ActivityMainBinding iBinding;
     GsonWeatherParser WeatherJson;
@@ -61,8 +68,13 @@ public class MainActivity extends Activity implements IModifyUI{
     String weatherUrl = "https://dataservice.accuweather.com/forecasts/v1/daily/5day/"+londonKey+"?apikey="+ accuWeatherKey +"&metric=true";
 
 
-
-
+    ///CMU SPHINX
+    private static final String WAKEWORD_SEARCH = "WAKEWORD_SEARCH";
+    private static final int PERMISSIONS_REQUEST_CODE = 5;
+    private static int sensibility = 10;
+    private SpeechRecognizer mRecognizer;
+    private Vibrator mVibrator;
+    private static final String LOG_TAG = MainActivity.class.getName();
 
 
     @Override
@@ -89,7 +101,10 @@ public class MainActivity extends Activity implements IModifyUI{
 //            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 //        }
 
-
+//        mRecognizer.removeListener(MainActivity.this);
+//        mRecognizer.stop();
+//        mRecognizer.shutdown();
+//        setup();
 
 
     }
@@ -118,17 +133,8 @@ public class MainActivity extends Activity implements IModifyUI{
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(iTimeBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(iTimeBroadcastReceiver);
-    }
+
 
     @Override
     public void updateTimeDisplay() {
@@ -203,6 +209,102 @@ public class MainActivity extends Activity implements IModifyUI{
     @Override
     public Context getContext() {
         return getApplicationContext();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(iTimeBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        setup();
+    }
+
+    /**
+     * Stop the recognizer.
+     * Since cancel() does trigger an onResult() call,
+     * we cancel the recognizer rather then stopping it.
+     */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mRecognizer != null) {
+            mRecognizer.removeListener(this);
+            mRecognizer.cancel();
+            mRecognizer.shutdown();
+            Log.d(LOG_TAG, "PocketSphinx Recognizer was shutdown");
+        }
+        unregisterReceiver(iTimeBroadcastReceiver);
+    }
+
+    /**
+     * Setup the Recognizer with a sensitivity value in the range [1..100]
+     * Where 1 means no false alarms but many true matches might be missed.
+     * and 100 most of the words will be correctly detected, but you will have many false alarms.
+     */
+    private void setup() {
+        try {
+            final Assets assets = new Assets(MainActivity.this);
+            final File assetDir = assets.syncAssets();
+            mRecognizer = SpeechRecognizerSetup.defaultSetup()
+                    .setAcousticModel(new File(assetDir, "models/en-us-ptm"))
+                    .setDictionary(new File(assetDir, "models/lm/words.dic"))
+                    .setKeywordThreshold(Float.valueOf("1.e-" + 2 * sensibility))
+                    .getRecognizer();
+            mRecognizer.addKeyphraseSearch(WAKEWORD_SEARCH, getString(R.string.wake_word));
+            mRecognizer.addListener(this);
+            mRecognizer.startListening(WAKEWORD_SEARCH);
+            Log.d(LOG_TAG, "... listening");
+        } catch (IOException e) {
+            Log.e(LOG_TAG, e.toString());
+            Toast.makeText(getContext(),"Couldn't get microphone",Toast.LENGTH_LONG);
+        }
+    }
+
+    //
+    // RecognitionListener Implementation
+    //
+
+    @Override
+    public void onBeginningOfSpeech() {
+        Log.d(LOG_TAG, "Beginning Of Speech");
+
+    }
+
+    @Override
+    public void onEndOfSpeech() {
+        Log.d(LOG_TAG, "End Of Speech");
+
+    }
+
+    @Override
+    public void onPartialResult(final Hypothesis hypothesis) {
+        if (hypothesis != null) {
+            final String text = hypothesis.getHypstr();
+            Log.d(LOG_TAG, "on partial: " + text);
+            if (text.equals(getString(R.string.wake_word))) {
+
+
+                startActivity(new Intent(this, MainActivity.class));
+                Toast.makeText(getContext(),"DETECTED HOTWORD!",Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
+    @Override
+    public void onResult(final Hypothesis hypothesis) {
+        if (hypothesis != null) {
+            Log.d(LOG_TAG, "on Result: " + hypothesis.getHypstr() + " : " + hypothesis.getBestScore());
+
+        }
+    }
+
+    @Override
+    public void onError(final Exception e) {
+        Log.e(LOG_TAG, "on Error: " + e);
+    }
+
+    @Override
+    public void onTimeout() {
+        Log.d(LOG_TAG, "on Timeout");
     }
 
 
