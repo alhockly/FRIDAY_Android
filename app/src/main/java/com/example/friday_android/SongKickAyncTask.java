@@ -70,9 +70,6 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
                    ii++;
                }
 
-               if (cal.event.featuredArtists != null) {
-                   Log.d("Debug", cal.event.featuredArtists);
-               }
             }
 
             Log.d("Debug", jsonString);
