@@ -1,7 +1,6 @@
 package com.example.friday_android;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,17 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Vibrator;
-import android.text.Html;
+import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -30,6 +23,7 @@ import com.example.friday_android.databinding.ActivityMainBinding;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import edu.cmu.pocketsphinx.Assets;
@@ -71,7 +65,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     ///CMU SPHINX
     private static final String WAKEWORD_SEARCH = "WAKEWORD_SEARCH";
     private static final int PERMISSIONS_REQUEST_CODE = 5;
-    private static int sensibility = 10;
+    private static int sensitivity = 22;
     private SpeechRecognizer mRecognizer;
     private Vibrator mVibrator;
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -87,7 +81,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         registerReceiver(iTimeBroadcastReceiver,filter);
         iBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        //initHotword();
+
         updateTimeDisplay();
         refreshSongKickData();
         updateWeather();
@@ -96,16 +90,10 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 //                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
 //                ActivityCompat.checkSelfPermission(this,
 //                        Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-//                initHotword();
+//
 //        } else {
 //            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 //        }
-
-//        mRecognizer.removeListener(MainActivity.this);
-//        mRecognizer.stop();
-//        mRecognizer.shutdown();
-//        setup();
-
 
     }
 
@@ -132,8 +120,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             }
         }
     }
-
-
 
 
     @Override
@@ -170,16 +156,14 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                     try {
                         float maxTemp = WeatherJson.DailyForecasts.get(0).Temperature.Maximum.Value;
                         float minTemp = WeatherJson.DailyForecasts.get(0).Temperature.Minimum.Value;
-                        iBinding.CurrentTemp.setText(minTemp+ "°C /"+maxTemp+"°C");
+                        iBinding.CurrentTemp.setText(minTemp + "°C /" + maxTemp + "°C");
 
                     } catch (Exception e) {     //development builds be like
                         e.printStackTrace();
                     }
                 }
             });
-
         }
-
     }
 
     @Override
@@ -247,7 +231,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             mRecognizer = SpeechRecognizerSetup.defaultSetup()
                     .setAcousticModel(new File(assetDir, "models/en-us-ptm"))
                     .setDictionary(new File(assetDir, "models/lm/words.dic"))
-                    .setKeywordThreshold(Float.valueOf("1.e-" + 2 * sensibility))
+                    .setKeywordThreshold(Float.valueOf("1.e-" + 2 * sensitivity))
                     .getRecognizer();
             mRecognizer.addKeyphraseSearch(WAKEWORD_SEARCH, getString(R.string.wake_word));
             mRecognizer.addListener(this);
@@ -285,8 +269,21 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
                 startActivity(new Intent(this, MainActivity.class));
                 Toast.makeText(getContext(),"DETECTED HOTWORD!",Toast.LENGTH_SHORT);
+                ///////////////
+                Intent intent = new Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+                startActivityForResult(intent, 1);
             }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+        Log.d("Debug", result.toString());
+
     }
 
     @Override

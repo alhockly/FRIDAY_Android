@@ -20,7 +20,7 @@
         android:fontFamily="@font/majormonodisplay_regular"
         android:textAlignment="center"
         android:textColor="@color/brightWhite"
-        android:textSize="60sp"
+        android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="8:08" />
@@ -49,7 +49,6 @@
         android:gravity="center"
         android:maxLines="1"
         android:padding="0dp"
-        android:text="TextView"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
