@@ -56,11 +56,10 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 public class MainActivity extends Activity implements IModifyUI, RecognitionListener{
     TimeBroadcastReceiver iTimeBroadcastReceiver;
     ActivityMainBinding iBinding;
-    GsonWeatherParser WeatherJson;
+    GsonWeatherForecastParser WeatherJson;
 
     String londonKey = "328328";
-    String accuWeatherKey = "jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP";
-    String weatherUrl = "https://dataservice.accuweather.com/forecasts/v1/daily/5day/"+londonKey+"?apikey="+ accuWeatherKey +"&metric=true";
+
 
 
     ///CMU SPHINX
@@ -89,7 +88,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         updateTimeDisplay();
         refreshSongKickData();
         updateWeather();
-
 
 
         if (ActivityCompat.checkSelfPermission(this,
@@ -153,26 +151,40 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void updateWeather() {
-        new AccuweatherAsyncTask(weatherUrl, this).execute();
+        new AccuweatherAsyncTask( londonKey,this).execute();
 
     }
 
     @Override
-    public void refreshWeatherDisplay(GsonWeatherParser jsonObject) {
+    public void refreshWeatherDisplay(final GsonWeatherForecastParser forcastjson, final GsonCurrentWeatherParser currentConditionsJson) {
 
-        if (jsonObject.DailyForecasts != null) {
-            WeatherJson = jsonObject;
+        if (forcastjson != null) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
                     // Stuff that updates the UI
                     try {
-                        float maxTemp = WeatherJson.DailyForecasts.get(0).Temperature.Maximum.Value;
-                        float minTemp = WeatherJson.DailyForecasts.get(0).Temperature.Minimum.Value;
+                        float maxTemp = forcastjson.DailyForecasts.get(0).Temperature.Maximum.Value;
+                        float minTemp = forcastjson.DailyForecasts.get(0).Temperature.Minimum.Value;
                         iBinding.CurrentTemp.setText(minTemp + "°C /" + maxTemp + "°C");
 
                     } catch (Exception e) {     //development builds be like
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        if (currentConditionsJson != null){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    // Stuff that updates the UI
+                    try {
+                        iBinding.CurrentTemp.setText(String.valueOf(currentConditionsJson.Temperature.Metric.Value)+"°C");
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

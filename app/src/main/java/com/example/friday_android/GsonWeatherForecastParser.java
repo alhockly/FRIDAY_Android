@@ -2,7 +2,7 @@ package com.example.friday_android;
 
 import java.util.List;
 
-public class GsonWeatherParser extends GsonBase {
+public class GsonWeatherForecastParser extends GsonBase {
 
 
     List<dailyForecast> DailyForecasts;

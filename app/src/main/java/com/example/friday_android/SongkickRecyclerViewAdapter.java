@@ -55,8 +55,8 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
 
     @Override
     public int getItemCount() {
-        //return calenderEntries.size();
-        return 10;
+        return calenderEntries.size();
+        //return 10;
     }
 
 

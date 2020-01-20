@@ -49,27 +49,42 @@
             android:id="@+id/SongKickList"
             android:layout_width="500dp"
             android:layout_height="0dp"
-            android:layout_marginTop="56dp"
+            android:layout_marginTop="40dp"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="16dp"
             android:background="#000000"
+            app:layout_constrainedHeight="true"
             app:layout_constraintBottom_toTopOf="@+id/TimeDisplay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+
             android:id="@+id/CurrentTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/code_saver"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/TempRange"
+            app:layout_constraintStart_toStartOf="@+id/TempRange"
+            tools:text="21°C" />
+
+        <TextView
+            android:id="@+id/TempRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginTop="300dp"
             android:fontFamily="@font/code_saver"
-            android:textColor="#FFFFFF"
+            android:textColor="#D7FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="21°C" />
+            tools:text="21°C/34°C" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

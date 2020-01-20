@@ -6,7 +6,7 @@ public interface IModifyUI {
 
     void updateTimeDisplay();
     void updateWeather();
-    void refreshWeatherDisplay(GsonWeatherParser jsonObject);
+    void refreshWeatherDisplay(GsonWeatherForecastParser jsonObject, GsonCurrentWeatherParser currentWeatherjsonObj);
     void refreshSongKickDisplay(GsonSongKickParser jsonObject);
     void refreshSongKickData();
     Context getContext();
