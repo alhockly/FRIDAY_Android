@@ -4,70 +4,73 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 <!--Landscape UI-->
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/pitchBlack"
-    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ParentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/pitchBlack"
+        tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/TimeDisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="80dp"
-        android:fontFamily="@font/majormonodisplay_regular"
-        android:textAlignment="center"
-        android:textColor="@color/brightWhite"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="8:08" />
+        <TextView
+            android:id="@+id/TimeDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/majormonodisplay_regular"
+            android:textAlignment="center"
+            android:textColor="@color/brightWhite"
+            android:textSize="60sp"
+            app:layout_constraintBottom_toTopOf="@id/DateDisplay"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteY="803dp"
+            tools:text="8:08" />
 
 
-    <TextView
-        android:id="@+id/CurrentTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="300dp"
-        android:fontFamily="@font/code_saver"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="21°C" />
+        <TextView
+            android:id="@+id/DateDisplay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/code_saver_regular"
+            android:gravity="center"
+            android:maxLines="1"
+            android:padding="0dp"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/TimeDisplay"
 
-    <TextView
-        android:id="@+id/DateDisplay"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/code_saver_regular"
-        android:gravity="center"
-        android:maxLines="1"
-        android:padding="0dp"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="@+id/TimeDisplay"
-        app:layout_constraintStart_toStartOf="@+id/TimeDisplay"
-        app:layout_constraintTop_toBottomOf="@+id/TimeDisplay"
-        tools:text="16 September" />
+            app:layout_constraintStart_toStartOf="@+id/TimeDisplay"
+            tools:text="16 September" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/SongKickList"
-        android:layout_width="500dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/TimeDisplay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/SongKickList"
+            android:layout_width="500dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="16dp"
+            android:background="#000000"
+            app:layout_constraintBottom_toTopOf="@+id/TimeDisplay"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/CurrentTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="300dp"
+            android:fontFamily="@font/code_saver"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="21°C" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

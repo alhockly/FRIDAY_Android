@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -65,7 +66,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     ///CMU SPHINX
     private static final String WAKEWORD_SEARCH = "WAKEWORD_SEARCH";
     private static final int PERMISSIONS_REQUEST_CODE = 5;
-    private static int sensitivity = 22;
+    private static int sensitivity = 25;
     private SpeechRecognizer mRecognizer;
     private Vibrator mVibrator;
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -81,28 +82,34 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         registerReceiver(iTimeBroadcastReceiver,filter);
         iBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+        iBinding.ParentView.setKeepScreenOn(true);
+        iBinding.SongKickList.setFocusable(false);
+        hideNavbar();
 
         updateTimeDisplay();
         refreshSongKickData();
         updateWeather();
 
-//        if (ActivityCompat.checkSelfPermission(this,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-//                ActivityCompat.checkSelfPermission(this,
-//                        Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-//
-//        } else {
-//            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-//        }
+
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSIONS_REQUEST_CODE);
+        }
 
     }
+
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 1: {
+            case PERMISSIONS_REQUEST_CODE: {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
@@ -119,6 +126,13 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                 return;
             }
         }
+    }
+
+    public void hideNavbar(){
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
 
@@ -198,6 +212,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     @Override
     protected void onResume() {
         super.onResume();
+        hideNavbar();
         registerReceiver(iTimeBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
         setup();
     }
@@ -237,6 +252,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             mRecognizer.addListener(this);
             mRecognizer.startListening(WAKEWORD_SEARCH);
             Log.d(LOG_TAG, "... listening");
+            Toast.makeText(getContext(),"....Listening",Toast.LENGTH_LONG);
         } catch (IOException e) {
             Log.e(LOG_TAG, e.toString());
             Toast.makeText(getContext(),"Couldn't get microphone",Toast.LENGTH_LONG);
@@ -270,10 +286,10 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                 startActivity(new Intent(this, MainActivity.class));
                 Toast.makeText(getContext(),"DETECTED HOTWORD!",Toast.LENGTH_SHORT);
                 ///////////////
-                Intent intent = new Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
-                startActivityForResult(intent, 1);
+//                Intent intent = new Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE);
+//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+//                startActivityForResult(intent, 1);
             }
         }
     }
