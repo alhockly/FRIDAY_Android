@@ -5,9 +5,10 @@ import java.util.List;
 public class GsonCurrentWeatherParser  {
 
 
-    Temperature Temperature;
+    TemperatureObj Temperature;
+    int WeatherIcon;
 
-    class Temperature{
+    class TemperatureObj {
         TemperatureDetails Metric;
 
     }

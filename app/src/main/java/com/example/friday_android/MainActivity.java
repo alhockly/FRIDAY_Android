@@ -167,7 +167,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                     try {
                         float maxTemp = forcastjson.DailyForecasts.get(0).Temperature.Maximum.Value;
                         float minTemp = forcastjson.DailyForecasts.get(0).Temperature.Minimum.Value;
-                        iBinding.CurrentTemp.setText(minTemp + "°C /" + maxTemp + "°C");
+                        iBinding.TempRange.setText(minTemp + "°C/" + maxTemp + "°C");
 
                     } catch (Exception e) {     //development builds be like
                         e.printStackTrace();

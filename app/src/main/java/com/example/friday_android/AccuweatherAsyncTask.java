@@ -4,7 +4,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -76,11 +82,15 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
         try {
             Response response = client.newCall(currentConditionsRequest).execute();
             String jsonString = response.body().string();
-            currentWeatherJsonObj = new Gson().fromJson(jsonString, GsonCurrentWeatherParser.class);
-            Log.d("Debug", jsonString);
-            if (currentWeatherJsonObj.Temperature == null) {
+
+            Type founderListType = new TypeToken<ArrayList<GsonCurrentWeatherParser>>(){}.getType();
+            List<GsonCurrentWeatherParser> currentWeatherList = new Gson().fromJson(jsonString, founderListType);
+
+            if (currentWeatherList == null) {
                 throw new RequestsExceededException();
             }
+            currentWeatherJsonObj = currentWeatherList.get(0);
+
 
         } catch (IOException e) {
             e.printStackTrace();
