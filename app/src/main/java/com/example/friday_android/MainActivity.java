@@ -142,7 +142,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     @Override
     public void refreshWeatherDisplay(final GsonWeatherForecastParser forcastjson, final GsonCurrentWeatherParser currentConditionsJson) {
 
-        if (forcastjson.DailyForecasts != null) {
+        if (forcastjson != null) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -159,7 +159,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                 }
             });
         }
-        if (currentConditionsJson.Temperature != null){
+        if (currentConditionsJson != null){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

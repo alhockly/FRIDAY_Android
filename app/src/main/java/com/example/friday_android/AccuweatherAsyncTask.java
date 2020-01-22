@@ -28,7 +28,7 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     String FORECAST_URL = "/forecasts/v1/daily/5day/";
 
     String CURRENT_CONDITIONS_URL = "/currentconditions/v1/";
-    String BASE_URL = "http://dataservice.accuweather.com";
+    String BASE_URL = "https://dataservice.accuweather.com";
     String iLocationKey;
 
 
