@@ -34,33 +34,16 @@ import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 
-/**
- * Skeleton of an Android Things activity.
- * <p>
- * Android Things peripheral APIs are accessible through the class
- * PeripheralManagerService. For example, the snippet below will open a GPIO pin and
- * set it to HIGH:
- *
- * <pre>{@code
- * PeripheralManagerService service = new PeripheralManagerService();
- * mLedGpio = service.openGpio("BCM6");
- * mLedGpio.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
- * mLedGpio.setValue(true);
- * }</pre>
- * <p>
- * For more complex peripherals, look for an existing user-space driver, or implement one if none
- * is available.
- *
- * @see <a href="https://github.com/androidthings/contrib-drivers#readme">https://github.com/androidthings/contrib-drivers#readme</a>
- */
-public class MainActivity extends Activity implements IModifyUI, RecognitionListener{
+public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass{
     TimeBroadcastReceiver iTimeBroadcastReceiver;
     ActivityMainBinding iBinding;
     GsonWeatherForecastParser WeatherJson;
 
-    String londonKey = "328328";
+    String WeatherLocationKey;// = "328328";
+    String accuWeatherKey = "jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP";
 
 
+    String Spotify_Auth;
 
     ///CMU SPHINX
     private static final String WAKEWORD_SEARCH = "WAKEWORD_SEARCH";
@@ -75,7 +58,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        iTimeBroadcastReceiver = new TimeBroadcastReceiver(this);
+        iTimeBroadcastReceiver = new TimeBroadcastReceiver(this,this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(iTimeBroadcastReceiver,filter);
@@ -85,9 +68,14 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         iBinding.SongKickList.setFocusable(false);
         hideNavbar();
 
+        SetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME,"328328");
+
         updateTimeDisplay();
-        refreshSongKickData();
-        updateWeather();
+        new SongKickAyncTask(this).execute();
+        new AccuweatherAsyncTask(GetKey(Util.ACCUWEATHER_APIKEY_NAME),GetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME),this).execute();
+
+
+        //new SpotifyAuthAsyncTask(this).execute();
 
 
         if (ActivityCompat.checkSelfPermission(this,
@@ -149,16 +137,12 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         iBinding.DateDisplay.setText(date+" "+month);
     }
 
-    @Override
-    public void updateWeather() {
-        new AccuweatherAsyncTask( londonKey,this).execute();
 
-    }
 
     @Override
     public void refreshWeatherDisplay(final GsonWeatherForecastParser forcastjson, final GsonCurrentWeatherParser currentConditionsJson) {
 
-        if (forcastjson != null) {
+        if (forcastjson.DailyForecasts != null) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -175,7 +159,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                 }
             });
         }
-        if (currentConditionsJson != null){
+        if (currentConditionsJson.Temperature != null){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -211,10 +195,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
-    @Override
-    public void refreshSongKickData() {
-        new SongKickAyncTask(this).execute();
-    }
+
 
     @Override
     public Context getContext() {
@@ -333,4 +314,37 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
+    @Override
+    public void SetKey(String Name, String Key) {
+
+        switch (Name){
+
+            case Util.SPOTIFY_AUTHKEY_NAME:
+                Spotify_Auth=Key;
+
+            case Util.ACCUWEATHER_LOCATIONKEY_NAME:
+                WeatherLocationKey=Key;
+
+        }
+
+    }
+
+    @Override
+    public String GetKey(String Name) {
+
+
+        switch (Name){
+
+            case Util.SPOTIFY_AUTHKEY_NAME:
+                return Spotify_Auth;
+
+            case Util.ACCUWEATHER_LOCATIONKEY_NAME:
+                return WeatherLocationKey;
+
+            case Util.ACCUWEATHER_APIKEY_NAME:
+                return accuWeatherKey;
+        }
+
+        return null;
+    }
 }

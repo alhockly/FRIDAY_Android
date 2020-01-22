@@ -20,8 +20,9 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
 
     IModifyUI modifyUI;
     String url;
+    String apiKey;
 
-    String accuWeatherKey = "jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP";
+
 
     String URL_END = "?metric=true&apikey=";
     String FORECAST_URL = "/forecasts/v1/daily/5day/";
@@ -31,13 +32,13 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     String iLocationKey;
 
 
-    //TODO London city key 328328
     //api key jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP
     //TODO store key in keystore and city code in sharedprefs, also create method to get key from city name
 
-    public AccuweatherAsyncTask(String location_key, IModifyUI modUI){
+    public AccuweatherAsyncTask(String ApiKey, String location_key, IModifyUI modUI){
         modifyUI = modUI;
         iLocationKey = location_key;
+        apiKey = ApiKey;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        url = BASE_URL+ FORECAST_URL + iLocationKey + URL_END + accuWeatherKey;
+        url = BASE_URL+ FORECAST_URL + iLocationKey + URL_END + apiKey;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
@@ -76,7 +77,7 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
             e.printStackTrace();
         }
 
-        url = BASE_URL + CURRENT_CONDITIONS_URL + iLocationKey + URL_END + accuWeatherKey;
+        url = BASE_URL + CURRENT_CONDITIONS_URL + iLocationKey + URL_END + apiKey;
         Request currentConditionsRequest = new Request.Builder().url(url).build();
 
         try {
