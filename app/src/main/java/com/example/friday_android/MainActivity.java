@@ -207,7 +207,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         super.onResume();
         hideNavbar();
         registerReceiver(iTimeBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
-        setup();
+        //CMUsetup();
     }
 
     /**
@@ -232,7 +232,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
      * Where 1 means no false alarms but many true matches might be missed.
      * and 100 most of the words will be correctly detected, but you will have many false alarms.
      */
-    private void setup() {
+    private void CMUsetup() {
         try {
             final Assets assets = new Assets(MainActivity.this);
             final File assetDir = assets.syncAssets();
