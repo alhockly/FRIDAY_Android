@@ -3,9 +3,11 @@ package com.example.friday_android;
 import android.os.AsyncTask;
 
 import java.io.IOException;
+import java.net.URL;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Request.Builder;
 import okhttp3.Response;
 
 
@@ -15,13 +17,13 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
     IKeyPass iKeyPass;
     String url;
 
-    String BASE_URL="https://api.spotify.com";
+    String BASE_URL="https://accounts.spotify.com/";
 
 
     String AUTH_ENDPOINT = "/authorize";
 
     String clientID = "2c0d0c49b20c4a2cbe346f42bb6dab74";
-
+    String clientSecret = "811e8611fafc4683b415caae2814d98b";
     String scope = "user-read-currently-playing";
 
 
@@ -39,7 +41,10 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
 
 
         try {
-            Response response = OkHttpCall();
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder().url(url).build();
+            Response response = client.newCall(request).execute();
             String jsonString = response.body().string();
 
             //weatherForcastJsonObj = new Gson().fromJson(jsonString, GsonWeatherForecastParser.class);

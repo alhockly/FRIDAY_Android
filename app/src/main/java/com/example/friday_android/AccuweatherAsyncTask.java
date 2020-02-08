@@ -31,6 +31,8 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     String BASE_URL = "https://dataservice.accuweather.com";
     String iLocationKey;
 
+    GsonWeatherForecastParser weatherForcastJsonObj = null;
+    GsonCurrentWeatherParser currentWeatherJsonObj = null;
 
     //api key jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP
     //TODO store key in keystore and city code in sharedprefs, also create method to get key from city name
@@ -53,8 +55,7 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
-        GsonWeatherForecastParser weatherForcastJsonObj = null;
-        GsonCurrentWeatherParser currentWeatherJsonObj = null;
+
 
         try {
             Response response = client.newCall(request).execute();
@@ -102,13 +103,13 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
         }
 
 
-        modifyUI.refreshWeatherDisplay(weatherForcastJsonObj,currentWeatherJsonObj);
+
         return null;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-
+        modifyUI.refreshWeatherDisplay(weatherForcastJsonObj,currentWeatherJsonObj);
     }
 }

@@ -22,6 +22,7 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
 
    String url =  "https://api.songkick.com/api/3.0/users/"+username+"/calendar.json?reason=tracked_artist&apikey="+apiKey;
 
+    GsonSongKickParser js;
 
     IModifyUI modifyUI;
 
@@ -39,7 +40,7 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
             String jsonString = response.body().string();
 
 
-            GsonSongKickParser js = new Gson().fromJson(jsonString, GsonSongKickParser.class);
+            js = new Gson().fromJson(jsonString, GsonSongKickParser.class);
 
             for(GsonSongKickParser.CalenderEntry cal : js.resultsPage.results.calendarEntry){
 
@@ -77,7 +78,7 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
                 throw new RequestsExceededException();
             }
 
-            modifyUI.refreshSongKickDisplay(js);
+
 
 
         } catch (RequestsExceededException e) {
@@ -91,5 +92,10 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
         }
 
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        modifyUI.refreshSongKickDisplay(js);
     }
 }

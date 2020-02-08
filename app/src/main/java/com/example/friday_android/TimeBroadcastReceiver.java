@@ -11,14 +11,14 @@ import java.time.temporal.ChronoUnit;
 public class TimeBroadcastReceiver extends BroadcastReceiver {
 
     IModifyUI modifyUI;
-    IKeyPass iKeyPass;
+
 
     LocalDateTime lastWeather;
     LocalDateTime lastSongkickFetch;
 
-    public TimeBroadcastReceiver(IModifyUI UI, IKeyPass aKeyPass) {
+    public TimeBroadcastReceiver(IModifyUI UI) {
         modifyUI = UI;
-        iKeyPass = aKeyPass;
+
     }
 
     @Override
@@ -37,12 +37,13 @@ public class TimeBroadcastReceiver extends BroadcastReceiver {
         }
 
         if(ChronoUnit.MINUTES.between(lastWeather, now)>30){
-            new AccuweatherAsyncTask(iKeyPass.GetKey(Util.ACCUWEATHER_APIKEY_NAME), iKeyPass.GetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME),modifyUI).execute();
+
+            new AccuweatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
             lastWeather = now;
         }
 
         if (ChronoUnit.MINUTES.between(lastSongkickFetch, now)>1440){
-            new SongKickAyncTask(modifyUI);
+            new SongKickAyncTask(modifyUI).execute();
             lastSongkickFetch = now;
         }
 

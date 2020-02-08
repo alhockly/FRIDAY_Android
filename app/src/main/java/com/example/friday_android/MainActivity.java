@@ -45,6 +45,8 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     String Spotify_Auth;
 
+    SongkickRecyclerViewAdapter songkickRecyclerViewAdapter = null;
+
     ///CMU SPHINX
     private static final String WAKEWORD_SEARCH = "WAKEWORD_SEARCH";
     private static final int PERMISSIONS_REQUEST_CODE = 5;
@@ -58,7 +60,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        iTimeBroadcastReceiver = new TimeBroadcastReceiver(this,this);
+        iTimeBroadcastReceiver = new TimeBroadcastReceiver(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(iTimeBroadcastReceiver,filter);
@@ -69,13 +71,14 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         hideNavbar();
 
         SetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME,"328328");
+        SetKey(Util.ACCUWEATHER_APIKEY_NAME,"jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP");
 
         updateTimeDisplay();
         new SongKickAyncTask(this).execute();
         new AccuweatherAsyncTask(GetKey(Util.ACCUWEATHER_APIKEY_NAME),GetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME),this).execute();
 
 
-        //new SpotifyAuthAsyncTask(this).execute();
+        new SpotifyAuthAsyncTask(this).execute();
 
 
         if (ActivityCompat.checkSelfPermission(this,
@@ -143,56 +146,45 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     public void refreshWeatherDisplay(final GsonWeatherForecastParser forcastjson, final GsonCurrentWeatherParser currentConditionsJson) {
 
         if (forcastjson != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
 
-                    // Stuff that updates the UI
-                    try {
-                        float maxTemp = forcastjson.DailyForecasts.get(0).Temperature.Maximum.Value;
-                        float minTemp = forcastjson.DailyForecasts.get(0).Temperature.Minimum.Value;
-                        iBinding.TempRange.setText(minTemp + "°C/" + maxTemp + "°C");
+            try {
+                float maxTemp = forcastjson.DailyForecasts.get(0).Temperature.Maximum.Value;
+                float minTemp = forcastjson.DailyForecasts.get(0).Temperature.Minimum.Value;
+                iBinding.TempRange.setText(minTemp + "°C/" + maxTemp + "°C");
 
-                    } catch (Exception e) {     //development builds be like
-                        e.printStackTrace();
-                    }
-                }
-            });
+            } catch (Exception e) {     //development builds be like
+                e.printStackTrace();
+            }
         }
-        if (currentConditionsJson != null){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
 
-                    // Stuff that updates the UI
-                    try {
-                        iBinding.CurrentTemp.setText(String.valueOf(currentConditionsJson.Temperature.Metric.Value)+"°C");
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+        if (currentConditionsJson != null) {
+            try {
+                iBinding.CurrentTemp.setText(String.valueOf(currentConditionsJson.Temperature.Metric.Value) + "°C");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
     @Override
     public void refreshSongKickDisplay(final GsonSongKickParser jsonObject) {
-        if (jsonObject != null){
-            final IModifyUI mod = this;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+        iBinding.SongKickList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-                    iBinding.SongKickList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                    SongkickRecyclerViewAdapter adapter = new SongkickRecyclerViewAdapter(jsonObject,mod);
-                    iBinding.SongKickList.addItemDecoration(new SongKickRecyclerSpacer());
-                    iBinding.SongKickList.setAdapter(adapter);
-
-                }
-            });
+        if (songkickRecyclerViewAdapter == null) {
+            songkickRecyclerViewAdapter = new SongkickRecyclerViewAdapter(jsonObject, this);
+            iBinding.SongKickList.addItemDecoration(new SongKickRecyclerSpacer());
+            iBinding.SongKickList.setAdapter(songkickRecyclerViewAdapter);
         }
+
+        songkickRecyclerViewAdapter.calenderEntries = jsonObject.getevents();
+        songkickRecyclerViewAdapter.notifyDataSetChanged();
+
+
+
     }
+
 
 
 
@@ -314,37 +306,26 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
+    //TODO use map for keys
+
     @Override
     public void SetKey(String Name, String Key) {
 
-        switch (Name){
+        Util.apiKeyMap.put(Name,Key);
 
-            case Util.SPOTIFY_AUTHKEY_NAME:
-                Spotify_Auth=Key;
 
-            case Util.ACCUWEATHER_LOCATIONKEY_NAME:
-                WeatherLocationKey=Key;
-
-        }
 
     }
 
     @Override
     public String GetKey(String Name) {
 
-
-        switch (Name){
-
-            case Util.SPOTIFY_AUTHKEY_NAME:
-                return Spotify_Auth;
-
-            case Util.ACCUWEATHER_LOCATIONKEY_NAME:
-                return WeatherLocationKey;
-
-            case Util.ACCUWEATHER_APIKEY_NAME:
-                return accuWeatherKey;
+        if(Util.apiKeyMap.containsKey(Name)){
+            return Util.apiKeyMap.get(Name).toString();
+        } else {
+            return null;
         }
 
-        return null;
+
     }
 }

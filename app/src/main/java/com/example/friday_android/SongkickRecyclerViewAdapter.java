@@ -24,6 +24,13 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
     public SongkickRecyclerViewAdapter(GsonSongKickParser aGson, IModifyUI modUI){
         calenderEntries = aGson.getevents();
         modifyUI = modUI;
+
+    }
+
+    public void clear() {
+        int size = calenderEntries.size();
+        calenderEntries.clear();
+        notifyItemRangeRemoved(0, size);
     }
 
     @NonNull
