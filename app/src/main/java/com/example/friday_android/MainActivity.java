@@ -93,8 +93,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         }
 
         new AppUpdateAsyncTask(getContext(),this).execute("https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk");
-        //File apk = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/build.apk");
-        //installApp(apk);
+
     }
 
 
@@ -147,9 +146,8 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
 
     @Override
-    public void refreshWeatherDisplay(final GsonWeatherForecastParser forcastjson, final GsonCurrentWeatherParser currentConditionsJson) {
+    public void refreshWeatherDisplay(GsonWeatherForecastParser forcastjson, GsonCurrentWeatherParser currentConditionsJson) {
         if (forcastjson != null) {
-
             try {
                 float maxTemp = forcastjson.DailyForecasts.get(0).Temperature.Maximum.Value;
                 float minTemp = forcastjson.DailyForecasts.get(0).Temperature.Minimum.Value;
@@ -166,7 +164,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -191,7 +188,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     @Override
     public void installApp(File apkFile) {
         apkFile.setReadable(true,false);
-        //Intent intent = new Intent("android.intent.action.VIEW");
         Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
         intent.addCategory("android.intent.category.DEFAULT");
         Uri fileUri = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", apkFile);
@@ -204,7 +200,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void SetKey(String Name, String Key) {
-
         Util.apiKeyMap.put(Name,Key);
     }
 
@@ -223,8 +218,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     public Context getContext() {
         return getApplicationContext();
     }
-
-
 
 
 

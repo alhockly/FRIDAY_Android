@@ -8,15 +8,9 @@ public class Util {
     public static final String ACCUWEATHER_LOCATIONKEY_NAME = "LOCATION_KEY";
     public static final String ACCUWEATHER_APIKEY_NAME = "WEATHER_API_KEY";
 
-    public static HashMap apiKeyMap= new HashMap();
+    public static HashMap apiKeyMap = new HashMap();
 
     public static IUpdateApp iUpdateApp;
-
-    public static void updateSelf(){
-        //TODO file download asynctask
-        //iUpdateApp.installApp();
-    }
-
 
 
 }
