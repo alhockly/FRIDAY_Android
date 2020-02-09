@@ -10,4 +10,13 @@ public class Util {
 
     public static HashMap apiKeyMap= new HashMap();
 
+    public static IUpdateApp iUpdateApp;
+
+    public static void updateSelf(){
+        //TODO file download asynctask
+        //iUpdateApp.installApp();
+    }
+
+
+
 }

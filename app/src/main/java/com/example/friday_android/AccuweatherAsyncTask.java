@@ -110,6 +110,8 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        modifyUI.refreshWeatherDisplay(weatherForcastJsonObj,currentWeatherJsonObj);
+        if(weatherForcastJsonObj.DailyForecasts != null && currentWeatherJsonObj != null){
+            modifyUI.refreshWeatherDisplay(weatherForcastJsonObj,currentWeatherJsonObj);
+        }
     }
 }

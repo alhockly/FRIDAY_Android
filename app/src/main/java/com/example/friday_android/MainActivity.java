@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -34,8 +37,8 @@ import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 
-public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass{
-    TimeBroadcastReceiver iTimeBroadcastReceiver;
+public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp{
+    TimeBasedExecutor iTimeBasedExecutor;
     ActivityMainBinding iBinding;
     GsonWeatherForecastParser WeatherJson;
 
@@ -60,12 +63,13 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        iTimeBroadcastReceiver = new TimeBroadcastReceiver(this);
+        Util.iUpdateApp = this;
+        iTimeBasedExecutor = new TimeBasedExecutor(this,this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
-        registerReceiver(iTimeBroadcastReceiver,filter);
-        iBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        registerReceiver(iTimeBasedExecutor,filter);
 
+        iBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         iBinding.ParentView.setKeepScreenOn(true);
         iBinding.SongKickList.setFocusable(false);
         hideNavbar();
@@ -77,9 +81,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         new SongKickAyncTask(this).execute();
         new AccuweatherAsyncTask(GetKey(Util.ACCUWEATHER_APIKEY_NAME),GetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME),this).execute();
 
-
         new SpotifyAuthAsyncTask(this).execute();
-
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
@@ -90,8 +92,10 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSIONS_REQUEST_CODE);
         }
 
+        new AppUpdateAsyncTask(getContext(),this).execute("https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk");
+        //File apk = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/build.apk");
+        //installApp(apk);
     }
-
 
 
     @Override
@@ -144,7 +148,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void refreshWeatherDisplay(final GsonWeatherForecastParser forcastjson, final GsonCurrentWeatherParser currentConditionsJson) {
-
         if (forcastjson != null) {
 
             try {
@@ -156,7 +159,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                 e.printStackTrace();
             }
         }
-
 
         if (currentConditionsJson != null) {
             try {
@@ -186,7 +188,35 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
+    @Override
+    public void installApp(File apkFile) {
+        apkFile.setReadable(true,false);
+        //Intent intent = new Intent("android.intent.action.VIEW");
+        Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+        intent.addCategory("android.intent.category.DEFAULT");
+        Uri fileUri = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", apkFile);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
+        startActivity(intent);
+    }
 
+
+    @Override
+    public void SetKey(String Name, String Key) {
+
+        Util.apiKeyMap.put(Name,Key);
+    }
+
+    @Override
+    public String GetKey(String Name) {
+
+        if(Util.apiKeyMap.containsKey(Name)){
+            return Util.apiKeyMap.get(Name).toString();
+        } else {
+            return null;
+        }
+    }
 
 
     @Override
@@ -194,11 +224,15 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         return getApplicationContext();
     }
 
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
         hideNavbar();
-        registerReceiver(iTimeBroadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        registerReceiver(iTimeBasedExecutor, new IntentFilter(Intent.ACTION_TIME_TICK));
         //CMUsetup();
     }
 
@@ -216,7 +250,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             mRecognizer.shutdown();
             Log.d(LOG_TAG, "PocketSphinx Recognizer was shutdown");
         }
-        unregisterReceiver(iTimeBroadcastReceiver);
+        unregisterReceiver(iTimeBasedExecutor);
     }
 
     /**
@@ -224,6 +258,9 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
      * Where 1 means no false alarms but many true matches might be missed.
      * and 100 most of the words will be correctly detected, but you will have many false alarms.
      */
+
+
+    /////CMU Sphinx stuff
     private void CMUsetup() {
         try {
             final Assets assets = new Assets(MainActivity.this);
@@ -306,26 +343,4 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
-    //TODO use map for keys
-
-    @Override
-    public void SetKey(String Name, String Key) {
-
-        Util.apiKeyMap.put(Name,Key);
-
-
-
-    }
-
-    @Override
-    public String GetKey(String Name) {
-
-        if(Util.apiKeyMap.containsKey(Name)){
-            return Util.apiKeyMap.get(Name).toString();
-        } else {
-            return null;
-        }
-
-
-    }
 }
