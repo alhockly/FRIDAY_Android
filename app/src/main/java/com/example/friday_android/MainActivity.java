@@ -1,7 +1,6 @@
 package com.example.friday_android;
 
 import androidx.annotation.NonNull;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -10,14 +9,12 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
@@ -40,13 +37,7 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp{
     TimeBasedExecutor iTimeBasedExecutor;
     ActivityMainBinding iBinding;
-    GsonWeatherForecastParser WeatherJson;
 
-    String WeatherLocationKey;// = "328328";
-    String accuWeatherKey = "jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP";
-
-
-    String Spotify_Auth;
 
     SongkickRecyclerViewAdapter songkickRecyclerViewAdapter = null;
 
@@ -81,7 +72,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         new SongKickAyncTask(this).execute();
         new AccuweatherAsyncTask(GetKey(Util.ACCUWEATHER_APIKEY_NAME),GetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME),this).execute();
 
-        new SpotifyAuthAsyncTask(this).execute();
+        new SpotifyAuthAsyncTask().execute();
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
@@ -92,8 +83,12 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSIONS_REQUEST_CODE);
         }
 
-        new AppUpdateAsyncTask(getContext(),this).execute("https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk");
 
+        try {
+            new HttpServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

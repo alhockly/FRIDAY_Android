@@ -13,25 +13,15 @@ import okhttp3.Response;
 
 public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
 
-
-    IKeyPass iKeyPass;
     String url;
 
     String BASE_URL="https://accounts.spotify.com/";
 
-
-    String AUTH_ENDPOINT = "/authorize";
+    String AUTH_ENDPOINT = "authorize";
 
     String clientID = "2c0d0c49b20c4a2cbe346f42bb6dab74";
     String clientSecret = "811e8611fafc4683b415caae2814d98b";
     String scope = "user-read-currently-playing";
-
-
-
-    public SpotifyAuthAsyncTask(IKeyPass ikeypass){
-        iKeyPass = ikeypass;
-    }
-
 
 
     @Override
@@ -47,9 +37,9 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
             Response response = client.newCall(request).execute();
             String jsonString = response.body().string();
 
-            //weatherForcastJsonObj = new Gson().fromJson(jsonString, GsonWeatherForecastParser.class);
 
-            iKeyPass.SetKey(Util.SPOTIFY_AUTHKEY_NAME,"key");
+            Util.apiKeyMap.put(Util.SPOTIFY_AUTHKEY_NAME,"key");
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 28
         versionCode 6
-        versionName "1.5"
+        versionName "1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled false
     }
@@ -42,4 +42,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.2.2")
     implementation 'com.google.code.gson:gson:2.8.6'
     compile(name: 'pocketsphinx-android-5prealpha-release', ext: 'aar')
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    compile group: 'com.spotify.android', name: 'auth', version: '1.2.0'
+
 }
