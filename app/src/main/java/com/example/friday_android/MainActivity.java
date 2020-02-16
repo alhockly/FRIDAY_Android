@@ -175,8 +175,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         songkickRecyclerViewAdapter.calenderEntries = jsonObject.getevents();
         songkickRecyclerViewAdapter.notifyDataSetChanged();
 
-
-
     }
 
 
