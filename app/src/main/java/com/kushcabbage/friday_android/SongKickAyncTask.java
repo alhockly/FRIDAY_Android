@@ -95,6 +95,8 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        modifyUI.refreshSongKickDisplay(js);
+        if( js!=null){
+            modifyUI.refreshSongKickDisplay(js);
+        }
     }
 }

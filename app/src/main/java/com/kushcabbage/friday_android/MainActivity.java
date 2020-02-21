@@ -168,7 +168,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
     @Override
-    public void refreshSongKickDisplay(final GsonSongKickParser jsonObject) {
+    public void refreshSongKickDisplay(GsonSongKickParser jsonObject) {
         iBinding.SongKickList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         if (songkickRecyclerViewAdapter == null) {

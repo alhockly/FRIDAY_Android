@@ -42,26 +42,25 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
 
     @Override
     public void onBindViewHolder(@NonNull SongkickRecyclerViewAdapter.ViewHolder holder, int position) {
-        if( !calenderEntries.isEmpty()) {
-            GsonSongKickParser.CalenderEntry entry = calenderEntries.get(position);
-            holder.name.setText(entry.event.performance.get(0).displayName);
-            holder.venue.setText("@ " + entry.event.venue.displayName);
-            holder.features.setText(entry.event.featuredArtists);
-            if (entry.event.start.dateobj != null) {
-                int date = entry.event.start.dateobj.getDate();
-                int month = entry.event.start.dateobj.getMonth();
 
-                holder.date.setText(date + "\n" + months[month]);
-            }
+        GsonSongKickParser.CalenderEntry entry = calenderEntries.get(position);
+        holder.name.setText(entry.event.performance.get(0).displayName);
+        holder.venue.setText("@ " + entry.event.venue.displayName);
+        holder.features.setText(entry.event.featuredArtists);
+        if (entry.event.start.dateobj != null) {
+            int date = entry.event.start.dateobj.getDate();
+            int month = entry.event.start.dateobj.getMonth();
 
+            holder.date.setText(date + "\n" + months[month]);
         }
+
+
 
     }
 
     @Override
     public int getItemCount() {
         return calenderEntries.size();
-        //return 10;
     }
 
 
@@ -76,7 +75,6 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
             date = itemView.findViewById(R.id.dateInfo);
             features = itemView.findViewById(R.id.artistFeatures);
 
-            //define views
         }
     }
 }

@@ -23,7 +23,6 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     String apiKey;
 
 
-
     String URL_END = "?metric=true&apikey=";
     String FORECAST_URL = "/forecasts/v1/daily/5day/";
 
@@ -35,7 +34,7 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     GsonCurrentWeatherParser currentWeatherJsonObj = null;
 
     //api key jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP
-    //TODO store key in keystore and city code in sharedprefs, also create method to get key from city name
+    //TODO store key in keystore and city code in sharedprefs, also create method to get key from ip address
 
     public AccuweatherAsyncTask(String ApiKey, String location_key, IModifyUI modUI){
         modifyUI = modUI;
@@ -108,7 +107,7 @@ public class AccuweatherAsyncTask extends AsyncTask<Void,String,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if(weatherForcastJsonObj.DailyForecasts != null && currentWeatherJsonObj != null){
+        if(weatherForcastJsonObj != null || currentWeatherJsonObj != null){
             modifyUI.refreshWeatherDisplay(weatherForcastJsonObj,currentWeatherJsonObj);
         }
     }
