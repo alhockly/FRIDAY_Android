@@ -94,7 +94,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             e.printStackTrace();
         }
 
-        new AppUpdateAsyncTask(getContext(),this).execute(githubUpdateURL);
     }
 
 
