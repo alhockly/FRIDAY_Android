@@ -1,4 +1,4 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import androidx.annotation.NonNull;
 import android.Manifest;
@@ -20,7 +20,8 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.friday_android.databinding.ActivityMainBinding;
+import com.kushcabbage.friday_android.databinding.ActivityMainBinding;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,9 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp{
     TimeBasedExecutor iTimeBasedExecutor;
     ActivityMainBinding iBinding;
+
+    String githubUpdateURL = "https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk";
+
 
 
     SongkickRecyclerViewAdapter songkickRecyclerViewAdapter = null;
@@ -89,6 +93,8 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        new AppUpdateAsyncTask(getContext(),this).execute(githubUpdateURL);
     }
 
 

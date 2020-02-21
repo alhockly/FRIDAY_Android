@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.friday_android">
+    package="com.kushcabbage.friday_android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -14,7 +14,7 @@
         <uses-library android:name="com.google.android.things"
             android:required="false"/>
 
-        <activity android:name=".MainActivity"
+        <activity android:name="com.kushcabbage.friday_android.MainActivity"
             android:screenOrientation="landscape"
             >
             <intent-filter>
@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <receiver android:name=".TimeBasedExecutor" >
+        <receiver android:name="com.kushcabbage.friday_android.TimeBasedExecutor" >
             <intent-filter>
                 <action android:name="android.intent.ACTION.TIME_TICK" />
                 <action android:name="android.intent.ACTION.TIME_CHANGED" />
@@ -38,7 +38,7 @@
         </receiver>
 
         <provider
-            android:name=".GenericFileProvider"
+            android:name="com.kushcabbage.friday_android.GenericFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">

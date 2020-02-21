@@ -1,4 +1,4 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -33,6 +33,10 @@ public class AppUpdateAsyncTask extends AsyncTask<String,Void,Void> {
             OutputStream output = null;
             HttpURLConnection connection = null;
             try {
+                if(strings.length==0){
+                    System.out.println("Download link not provided to AsyncTask");
+                    throw new NullPointerException();
+                }
                 URL url = new URL(strings[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -86,7 +90,8 @@ public class AppUpdateAsyncTask extends AsyncTask<String,Void,Void> {
                 System.out.println("VersionCode : " + info.versionCode + ", VersionName : " + info.versionName);
                 downloadedVersionName = info.versionName;
 
-            } catch (Exception e) {
+            } catch (NullPointerException | IOException e) {
+                e.printStackTrace();
                 return null;
             }
 
@@ -100,20 +105,20 @@ public class AppUpdateAsyncTask extends AsyncTask<String,Void,Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
 
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            String installedVersion = pInfo.versionName;
-            System.out.println();
+        if(downloadedVersionName!= null) {
+            try {
+                PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                String installedVersion = pInfo.versionName;
 
-            if(Float.parseFloat(installedVersion) < Float.parseFloat(downloadedVersionName)){
-                iUpdateApp.installApp(new File(saveDir+saveFileName));
+                if (Float.parseFloat(installedVersion) < Float.parseFloat(downloadedVersionName)) {
+                    iUpdateApp.installApp(new File(saveDir + saveFileName));
+                }
+
+
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
             }
-
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
         }
-
 
     }
 }

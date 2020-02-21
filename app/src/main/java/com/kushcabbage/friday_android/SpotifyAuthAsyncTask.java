@@ -1,8 +1,6 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import android.os.AsyncTask;
-
-import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -11,35 +9,34 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class SpotifyPlayingAsyncTask extends AsyncTask<Void,String,Void> {
+public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
 
-    IModifyUI modifyUI;
     String url;
 
-    String BASE_URL="https://api.spotify.com";
-    String NOWPLAYING_ENDPOINT = "/v1/me/player/currently-playing";
+    String BASE_URL="https://accounts.spotify.com/";
 
+    String AUTH_ENDPOINT = "authorize";
 
-
-    public SpotifyPlayingAsyncTask(IModifyUI modUI, String authKey){
-        modifyUI = modUI;
-
-    }
-
+    String clientID = "2c0d0c49b20c4a2cbe346f42bb6dab74";
+    String clientSecret = "811e8611fafc4683b415caae2814d98b";
+    String scope = "user-read-currently-playing";
 
 
     @Override
     protected Void doInBackground(Void... voids) {
 
-        url = "";
+        url = BASE_URL + AUTH_ENDPOINT +"?client_id=" + clientID + "&scope=" + scope + "&response_type=code" + "&redirect_uri=http://localhost/";
 
 
         try {
-            Response response = OkHttpCall();
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder().url(url).build();
+            Response response = client.newCall(request).execute();
             String jsonString = response.body().string();
 
-            //weatherForcastJsonObj = new Gson().fromJson(jsonString, GsonWeatherForecastParser.class);
 
+            Util.apiKeyMap.put(Util.SPOTIFY_AUTHKEY_NAME,"key");
 
         } catch (IOException e) {
             e.printStackTrace();

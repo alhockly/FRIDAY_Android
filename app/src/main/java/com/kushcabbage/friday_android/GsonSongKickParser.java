@@ -1,4 +1,4 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import java.util.Date;
 import java.util.List;

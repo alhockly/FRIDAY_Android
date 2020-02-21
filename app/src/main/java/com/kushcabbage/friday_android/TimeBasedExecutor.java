@@ -1,4 +1,4 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,8 +10,12 @@ import java.time.temporal.ChronoUnit;
 
 public class TimeBasedExecutor extends BroadcastReceiver {
 
+    //TODO check internet connection
+
     IModifyUI modifyUI;
     IUpdateApp updateApp;
+
+    String githubUpdateURL = "https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk"; //TODO move this somewhere else
 
 
     LocalDateTime lastWeather = LocalDateTime.now();
@@ -33,7 +37,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
 
         if(ChronoUnit.HOURS.between(lastHourly, now)>=1){
             lastDaily=now;
-            new AppUpdateAsyncTask(context,updateApp).execute("https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk");
+            new AppUpdateAsyncTask(context,updateApp).execute(githubUpdateURL);
         }
 
         if(ChronoUnit.DAYS.between(lastDaily, now)>=1){

@@ -1,8 +1,5 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
-import android.app.Application;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,27 +8,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRecyclerViewAdapter.ViewHolder>  {
 
     GsonSongKickParser songKickData;
     IModifyUI modifyUI;
-    List<GsonSongKickParser.CalenderEntry> calenderEntries;
+    List<GsonSongKickParser.CalenderEntry> calenderEntries = new ArrayList<>();
 
     String[] months = {"Jan","Feb","March","April","May","June","July","Aug","Sep","Oct","Nov","Dec"};
 
     public SongkickRecyclerViewAdapter(GsonSongKickParser aGson, IModifyUI modUI){
-        calenderEntries = aGson.getevents();
+        try{
+            calenderEntries = aGson.getevents();
+        } catch (NullPointerException e){
+        }
         modifyUI = modUI;
 
     }
 
-    public void clear() {
-        int size = calenderEntries.size();
-        calenderEntries.clear();
-        notifyItemRangeRemoved(0, size);
-    }
+
 
     @NonNull
     @Override
@@ -45,18 +42,19 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
 
     @Override
     public void onBindViewHolder(@NonNull SongkickRecyclerViewAdapter.ViewHolder holder, int position) {
-        GsonSongKickParser.CalenderEntry entry = calenderEntries.get(position);
-        holder.name.setText(entry.event.performance.get(0).displayName);
-        holder.venue.setText("@ "+entry.event.venue.displayName);
-        holder.features.setText(entry.event.featuredArtists);
-        if (entry.event.start.dateobj != null) {
-            int date = entry.event.start.dateobj.getDate();
-            int month = entry.event.start.dateobj.getMonth();
+        if( !calenderEntries.isEmpty()) {
+            GsonSongKickParser.CalenderEntry entry = calenderEntries.get(position);
+            holder.name.setText(entry.event.performance.get(0).displayName);
+            holder.venue.setText("@ " + entry.event.venue.displayName);
+            holder.features.setText(entry.event.featuredArtists);
+            if (entry.event.start.dateobj != null) {
+                int date = entry.event.start.dateobj.getDate();
+                int month = entry.event.start.dateobj.getMonth();
 
-            holder.date.setText(date+"\n"+months[month]);
+                holder.date.setText(date + "\n" + months[month]);
+            }
+
         }
-
-
 
     }
 

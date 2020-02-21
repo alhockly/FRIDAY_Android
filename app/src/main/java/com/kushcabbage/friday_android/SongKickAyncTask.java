@@ -1,4 +1,4 @@
-package com.example.friday_android;
+package com.kushcabbage.friday_android;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,7 +9,6 @@ import com.google.gson.JsonSyntaxException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
