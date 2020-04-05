@@ -3,7 +3,7 @@ package com.kushcabbage.friday_android;
 public class GsonCurrentWeatherParser  {
 
 
-    TemperatureObj Temperature;
+    public TemperatureObj Temperature;
     int WeatherIcon;
 
     class TemperatureObj {

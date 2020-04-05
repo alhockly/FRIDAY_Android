@@ -1,4 +1,4 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.gsonParsers;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.kushcabbage.friday_android.IModifyUI;
+import com.kushcabbage.friday_android.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,9 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
 
     }
 
-
+    public void setCalenderEntries(List<GsonSongKickParser.CalenderEntry> calenderEntries) {
+        this.calenderEntries = calenderEntries;
+    }
 
     @NonNull
     @Override
@@ -44,16 +49,22 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
     public void onBindViewHolder(@NonNull SongkickRecyclerViewAdapter.ViewHolder holder, int position) {
 
         GsonSongKickParser.CalenderEntry entry = calenderEntries.get(position);
-        holder.name.setText(entry.event.performance.get(0).displayName);
-        holder.venue.setText("@ " + entry.event.venue.displayName);
-        holder.features.setText(entry.event.featuredArtists);
-        if (entry.event.start.dateobj != null) {
-            int date = entry.event.start.dateobj.getDate();
-            int month = entry.event.start.dateobj.getMonth();
 
-            holder.date.setText(date + "\n" + months[month]);
+        if(entry!=null) {
+            if (entry.event.start.dateobj != null) {
+
+                int date = entry.event.start.dateobj.getDate();
+                int month = entry.event.start.dateobj.getMonth();
+                holder.date.setText(date + "\n" + months[month]);
+            }
+
+            holder.name.setText(entry.event.performance.get(0).displayName);
+            holder.venue.setText("@ " + entry.event.venue.displayName);
+            holder.features.setText(entry.event.featuredArtists);
+
+        }else{
+                holder.name.setText("null");
         }
-
 
 
     }
@@ -66,7 +77,6 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, venue, date, features;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

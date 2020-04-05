@@ -20,7 +20,11 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.kushcabbage.friday_android.AsyncTasks.AccuweatherAsyncTask;
 import com.kushcabbage.friday_android.databinding.ActivityMainBinding;
+import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser;
+import com.kushcabbage.friday_android.gsonParsers.SongKickAyncTask;
+import com.kushcabbage.friday_android.gsonParsers.SongkickRecyclerViewAdapter;
 
 
 import java.io.File;
@@ -41,8 +45,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     String githubUpdateURL = "https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk";
 
-
-
     SongkickRecyclerViewAdapter songkickRecyclerViewAdapter = null;
 
     ///CMU SPHINX
@@ -52,6 +54,8 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     private SpeechRecognizer mRecognizer;
     private Vibrator mVibrator;
     private static final String LOG_TAG = MainActivity.class.getName();
+
+
 
 
     @Override
@@ -144,7 +148,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
-
     @Override
     public void refreshWeatherDisplay(GsonWeatherForecastParser forcastjson, GsonCurrentWeatherParser currentConditionsJson) {
         if (forcastjson != null) {
@@ -169,6 +172,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void refreshSongKickDisplay(GsonSongKickParser jsonObject) {
+
         iBinding.SongKickList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         if (songkickRecyclerViewAdapter == null) {
@@ -177,7 +181,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             iBinding.SongKickList.setAdapter(songkickRecyclerViewAdapter);
         }
 
-        songkickRecyclerViewAdapter.calenderEntries = jsonObject.getevents();
+        songkickRecyclerViewAdapter.setCalenderEntries(jsonObject.getevents());
         songkickRecyclerViewAdapter.notifyDataSetChanged();
 
     }

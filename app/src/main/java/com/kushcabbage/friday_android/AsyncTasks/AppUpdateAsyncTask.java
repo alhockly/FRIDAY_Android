@@ -1,9 +1,11 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.AsyncTasks;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+
+import com.kushcabbage.friday_android.IUpdateApp;
 
 import java.io.File;
 import java.io.FileOutputStream;

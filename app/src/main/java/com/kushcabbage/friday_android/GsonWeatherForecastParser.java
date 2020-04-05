@@ -5,7 +5,7 @@ import java.util.List;
 public class GsonWeatherForecastParser extends GsonBase {
 
 
-    List<dailyForecast> DailyForecasts;
+    public List<dailyForecast> DailyForecasts;
 
 
     class dailyForecast{

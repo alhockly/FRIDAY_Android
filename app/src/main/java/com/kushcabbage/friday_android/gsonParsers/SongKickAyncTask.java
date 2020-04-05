@@ -1,14 +1,19 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.gsonParsers;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.kushcabbage.friday_android.IModifyUI;
+import com.kushcabbage.friday_android.exceptions.RequestsExceededException;
+import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,8 +30,11 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
 
     IModifyUI modifyUI;
 
+    Date currentDate;
+
     public SongKickAyncTask(IModifyUI modui){
         modifyUI = modui;
+        currentDate = new Date();
     }
 
     @Override
@@ -47,6 +55,7 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     try {
                         cal.event.start.dateobj = format.parse(cal.event.start.datetime);
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -72,21 +81,28 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
 
             }
 
+            for (Iterator<GsonSongKickParser.CalenderEntry> iterator = js.resultsPage.results.calendarEntry.iterator(); iterator.hasNext(); ) {
+                 GsonSongKickParser.CalenderEntry cal = iterator.next();
+                if (cal.event.start.dateobj != null) {
+                    if (cal.event.start.dateobj.before(currentDate)) {
+                        iterator.remove();
+                    }
+                }
+            }
+
             Log.d("Debug", jsonString);
             if (js.resultsPage == null) {
                 throw new RequestsExceededException();
             }
 
 
-
-
         } catch (RequestsExceededException e) {
             e.printStackTrace();
         } catch (JsonSyntaxException e) {
-            Log.d("Debug", "HTTP GET failed");
+            Log.d("Debug", "json parse failed");
             e.printStackTrace();
         } catch (IOException e) {
-            Log.d("Debug", "HTTP GET failed");
+            Log.d("Debug", "HTTP GET failed - probably offline");
             e.printStackTrace();
         }
 

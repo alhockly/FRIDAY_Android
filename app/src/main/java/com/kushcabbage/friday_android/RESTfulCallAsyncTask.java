@@ -2,6 +2,8 @@ package com.kushcabbage.friday_android;
 
 import android.os.AsyncTask;
 
+import com.kushcabbage.friday_android.IModifyUI;
+
 import java.io.IOException;
 
 import okhttp3.OkHttpClient;

@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/code_saver"
             android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:textSize="38sp"
 
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/TempRange"
@@ -80,7 +80,7 @@
             android:layout_marginTop="300dp"
             android:fontFamily="@font/code_saver"
             android:textColor="#ACACAC"
-            android:textSize="30sp"
+            android:textSize="34sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

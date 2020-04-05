@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/code_saver"
-        android:text="Smino"
+        android:text="ArtistName"
         android:textColor="#F5F2F2"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,13 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="-113dp"
         android:fontFamily="@font/code_saver"
-        android:text="TextView"
         android:gravity="top"
+        android:text="VenueName"
         android:textColor="#F5F2F2"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/artistName"
         app:layout_constraintTop_toBottomOf="@+id/artistName"
-        tools:text="aCorsica Studios" />
+        tools:text="Corsica Studios" />
 
     <TextView
         android:id="@+id/dateInfo"
@@ -50,10 +50,12 @@
 
     <TextView
         android:id="@+id/artistFeatures"
-        android:layout_width="wrap_content"
+        android:lines="1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text=" + Saba, Smino"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/artistName"
-        app:layout_constraintStart_toEndOf="@+id/artistName" />
+        app:layout_constraintEnd_toStartOf="@+id/dateInfo"
+        app:layout_constraintStart_toEndOf="@+id/artistName"
+        tools:text=" + Saba, Monte Booker, sdosandopsandpasndoasd" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,14 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.AsyncTasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.kushcabbage.friday_android.GsonCurrentWeatherParser;
+import com.kushcabbage.friday_android.GsonWeatherForecastParser;
+import com.kushcabbage.friday_android.IModifyUI;
+import com.kushcabbage.friday_android.exceptions.RequestsExceededException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

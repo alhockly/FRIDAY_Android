@@ -1,4 +1,6 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.gsonParsers;
+
+import androidx.annotation.NonNull;
 
 import java.util.Date;
 import java.util.List;
@@ -7,7 +9,7 @@ public class GsonSongKickParser {
 
 
         //List<CalenderEntry> calenderEntryList;
-        ResultsPage resultsPage;
+        public ResultsPage resultsPage;
 
         public List<CalenderEntry> getevents(){
             return resultsPage.results.calendarEntry;
@@ -23,9 +25,14 @@ public class GsonSongKickParser {
             List<CalenderEntry> calendarEntry;
         }
 
-        class CalenderEntry{
-            Event event;
+        public class CalenderEntry{
+            public Event event;
 
+            @NonNull
+            @Override
+            public String toString() {
+                return event.displayName;
+            }
         }
 
         class Event{

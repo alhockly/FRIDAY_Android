@@ -4,6 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.kushcabbage.friday_android.AsyncTasks.AccuweatherAsyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.AppUpdateAsyncTask;
+import com.kushcabbage.friday_android.gsonParsers.SongKickAyncTask;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -35,6 +40,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
 
         LocalDateTime now = LocalDateTime.now();
 
+
         if(ChronoUnit.HOURS.between(lastHourly, now)>=1){
             lastDaily=now;
             new AppUpdateAsyncTask(context,updateApp).execute(githubUpdateURL);
@@ -42,19 +48,24 @@ public class TimeBasedExecutor extends BroadcastReceiver {
 
         if(ChronoUnit.DAYS.between(lastDaily, now)>=1){
             lastDaily = now;
-            new SongKickAyncTask(modifyUI).execute();
+            executeDailyTasks();
         }
 
 
-        if(ChronoUnit.MINUTES.between(lastWeather, now)>30){
+        if(ChronoUnit.MINUTES.between(lastWeather, now)>40){
             new AccuweatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
             lastWeather = now;
         }
 
-        if (ChronoUnit.MINUTES.between(lastSongkickFetch, now)>1440){
-            new SongKickAyncTask(modifyUI).execute();
-            lastSongkickFetch = now;
-        }
+//        if (ChronoUnit.MINUTES.between(lastSongkickFetch, now)>1440){
+//            new SongKickAyncTask(modifyUI).execute();
+//            lastSongkickFetch = now;
+//        }
 
+    }
+
+
+    void executeDailyTasks(){
+        new SongKickAyncTask(modifyUI).execute();
     }
 }
