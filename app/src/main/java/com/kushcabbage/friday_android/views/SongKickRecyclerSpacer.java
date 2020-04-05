@@ -1,4 +1,4 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.views;
 
 import android.graphics.Rect;
 import android.view.View;

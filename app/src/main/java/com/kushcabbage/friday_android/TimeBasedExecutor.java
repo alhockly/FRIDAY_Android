@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.kushcabbage.friday_android.AsyncTasks.AccuweatherAsyncTask;
 import com.kushcabbage.friday_android.AsyncTasks.AppUpdateAsyncTask;
-import com.kushcabbage.friday_android.gsonParsers.SongKickAyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.SongKickAyncTask;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -31,6 +31,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     public TimeBasedExecutor(IModifyUI UI, IUpdateApp aUpdateApp) {
         modifyUI = UI;
         updateApp = aUpdateApp;
+        
     }
 
     @Override

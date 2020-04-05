@@ -1,4 +1,4 @@
-package com.kushcabbage.friday_android.gsonParsers;
+package com.kushcabbage.friday_android.AsyncTasks;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -49,9 +49,9 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
 
             js = new Gson().fromJson(jsonString, GsonSongKickParser.class);
 
-            for(GsonSongKickParser.CalenderEntry cal : js.resultsPage.results.calendarEntry){
+            for(GsonSongKickParser.CalenderEntry cal : js.getevents()){
 
-                if (cal.event.start.datetime != null) {
+                if (cal.getEvent().start.datetime != null) {
                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                     try {
                         cal.event.start.dateobj = format.parse(cal.event.start.datetime);
@@ -81,7 +81,7 @@ public class SongKickAyncTask extends AsyncTask<Void,Void,Void> {
 
             }
 
-            for (Iterator<GsonSongKickParser.CalenderEntry> iterator = js.resultsPage.results.calendarEntry.iterator(); iterator.hasNext(); ) {
+            for (Iterator<GsonSongKickParser.CalenderEntry> iterator = js.getevents().iterator(); iterator.hasNext(); ) {
                  GsonSongKickParser.CalenderEntry cal = iterator.next();
                 if (cal.event.start.dateobj != null) {
                     if (cal.event.start.dateobj.before(currentDate)) {

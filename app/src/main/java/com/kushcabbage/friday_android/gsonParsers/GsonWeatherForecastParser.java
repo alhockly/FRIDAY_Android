@@ -1,18 +1,25 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.gsonParsers;
 
 import java.util.List;
 
-public class GsonWeatherForecastParser extends GsonBase {
+public class GsonWeatherForecastParser {
 
 
     public List<dailyForecast> DailyForecasts;
 
 
-    class dailyForecast{
+    public class dailyForecast{
         String Link;
         DayNightClass Day;
         DayNightClass Night;
-        TemperatureClass Temperature;
+        public TemperatureClass Temperature;
+
+        public float minTemp(){
+            return Temperature.Minimum.Value;
+        }
+        public float maxTemp(){
+            return Temperature.Maximum.Value;
+        }
     }
 
 

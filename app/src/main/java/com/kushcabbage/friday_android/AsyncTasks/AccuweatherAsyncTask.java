@@ -5,8 +5,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.kushcabbage.friday_android.GsonCurrentWeatherParser;
-import com.kushcabbage.friday_android.GsonWeatherForecastParser;
+import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser;
+import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser;
 import com.kushcabbage.friday_android.IModifyUI;
 import com.kushcabbage.friday_android.exceptions.RequestsExceededException;
 

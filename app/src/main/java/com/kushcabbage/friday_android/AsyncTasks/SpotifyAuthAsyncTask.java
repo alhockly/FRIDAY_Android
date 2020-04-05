@@ -1,4 +1,4 @@
-package com.kushcabbage.friday_android;
+package com.kushcabbage.friday_android.AsyncTasks;
 
 import android.os.AsyncTask;
 

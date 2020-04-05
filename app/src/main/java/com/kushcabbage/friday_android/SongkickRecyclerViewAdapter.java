@@ -1,4 +1,4 @@
-package com.kushcabbage.friday_android.gsonParsers;
+package com.kushcabbage.friday_android;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kushcabbage.friday_android.IModifyUI;
-import com.kushcabbage.friday_android.R;
+import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRecyclerViewAdapter.ViewHolder>  {
@@ -50,22 +50,16 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
 
         GsonSongKickParser.CalenderEntry entry = calenderEntries.get(position);
 
-        if(entry!=null) {
-            if (entry.event.start.dateobj != null) {
-
-                int date = entry.event.start.dateobj.getDate();
-                int month = entry.event.start.dateobj.getMonth();
-                holder.date.setText(date + "\n" + months[month]);
-            }
-
-            holder.name.setText(entry.event.performance.get(0).displayName);
-            holder.venue.setText("@ " + entry.event.venue.displayName);
-            holder.features.setText(entry.event.featuredArtists);
-
-        }else{
-                holder.name.setText("null");
+        if (entry.getDateObj() != null) {
+            Date dateobj = entry.getDateObj();
+            int date = dateobj.getDate();
+            int month = dateobj.getMonth();
+            holder.date.setText(date + "\n" + months[month]);
         }
 
+        holder.name.setText(entry.getPerformance().get(0).getDisplayName());
+        holder.venue.setText("@ " + entry.getVenue().getDisplayName());
+        holder.features.setText(entry.getFeaturedArtists());
 
     }
 

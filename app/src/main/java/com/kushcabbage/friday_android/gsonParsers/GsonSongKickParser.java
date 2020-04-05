@@ -15,17 +15,20 @@ public class GsonSongKickParser {
             return resultsPage.results.calendarEntry;
         }
 
-
-        class ResultsPage{
+        public class ResultsPage{
             Results results;
             String status;
         }
 
-        class Results {
+        public class Results {
             List<CalenderEntry> calendarEntry;
         }
 
         public class CalenderEntry{
+            public Event getEvent() {
+                return event;
+            }
+
             public Event event;
 
             @NonNull
@@ -33,29 +36,67 @@ public class GsonSongKickParser {
             public String toString() {
                 return event.displayName;
             }
+
+            public Date getDateObj() {
+                return event.start.dateobj;
+            }
+
+            public List<Performance> getPerformance(){
+                return event.performance;
+            }
+
+            public Venue getVenue(){
+                return event.venue;
+            }
+
+            public String getFeaturedArtists(){
+                return event.featuredArtists;
+            }
+
         }
 
-        class Event{
+        public class Event{
             String displayName;
-            Start start;
-            List<Performance> performance;
+            public Start start;
+
+            public List<Performance> getPerformance() {
+                return performance;
+            }
+
+            public List<Performance> performance;
+
+            public Venue getVenue() {
+                return venue;
+            }
+
             Venue venue;
             Location location;
-            String featuredArtists;
+
+
+
+            public String featuredArtists;
         }
 
-        class Performance{
-            String displayName;
+        public class Performance{
+            public String getDisplayName() {
+                return displayName;
+            }
+
+            public String displayName;
         }
 
-        class Start{
-            String datetime;
-            Date dateobj;
+        public class Start{
+            public String datetime;
+            public Date dateobj;
 
 
 
         }
-        class Venue{
+        public class Venue{
+            public String getDisplayName() {
+                return displayName;
+            }
+
             String displayName;
         }
         class Location{

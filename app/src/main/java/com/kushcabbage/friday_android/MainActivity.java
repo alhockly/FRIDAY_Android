@@ -21,10 +21,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.kushcabbage.friday_android.AsyncTasks.AccuweatherAsyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.SpotifyAuthAsyncTask;
 import com.kushcabbage.friday_android.databinding.ActivityMainBinding;
+import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser;
 import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser;
-import com.kushcabbage.friday_android.gsonParsers.SongKickAyncTask;
-import com.kushcabbage.friday_android.gsonParsers.SongkickRecyclerViewAdapter;
+import com.kushcabbage.friday_android.AsyncTasks.SongKickAyncTask;
+import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser;
+import com.kushcabbage.friday_android.views.SongKickRecyclerSpacer;
 
 
 import java.io.File;
@@ -152,8 +155,8 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     public void refreshWeatherDisplay(GsonWeatherForecastParser forcastjson, GsonCurrentWeatherParser currentConditionsJson) {
         if (forcastjson != null) {
             try {
-                float maxTemp = forcastjson.DailyForecasts.get(0).Temperature.Maximum.Value;
-                float minTemp = forcastjson.DailyForecasts.get(0).Temperature.Minimum.Value;
+                float maxTemp = forcastjson.DailyForecasts.get(0).minTemp();
+                float minTemp = forcastjson.DailyForecasts.get(0).maxTemp();
                 iBinding.TempRange.setText(minTemp + "°C/" + maxTemp + "°C");
 
             } catch (Exception e) {     //development builds be like
