@@ -31,7 +31,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     public TimeBasedExecutor(IModifyUI UI, IUpdateApp aUpdateApp) {
         modifyUI = UI;
         updateApp = aUpdateApp;
-        
+
     }
 
     @Override
