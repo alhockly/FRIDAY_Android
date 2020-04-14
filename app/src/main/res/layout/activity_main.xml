@@ -30,7 +30,6 @@
             android:id="@+id/DateDisplay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/code_saver_regular"
             android:gravity="center"
@@ -39,11 +38,24 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="40sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/SunRiseSet"
             app:layout_constraintEnd_toEndOf="@+id/TimeDisplay"
 
             app:layout_constraintStart_toStartOf="@+id/TimeDisplay"
             tools:text="16 September" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/SunRiseSet"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="@id/DateDisplay"
+            app:layout_constraintEnd_toEndOf="@id/DateDisplay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="2dp"
+            tools:text="6:34 | 23:34"
+            android:textSize="18sp"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/SongKickList"
@@ -85,6 +97,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="21°C/34°C" />
+
+        <TextView
+            android:id="@+id/ExceptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            tools:text="Here is some exception that happened :(" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

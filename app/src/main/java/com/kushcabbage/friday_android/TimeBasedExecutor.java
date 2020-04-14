@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.kushcabbage.friday_android.AsyncTasks.AccuweatherAsyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.AccuweatherCurrentWeatherAsyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.AccuweatherForecastWeatherAsyncTask;
 import com.kushcabbage.friday_android.AsyncTasks.AppUpdateAsyncTask;
 import com.kushcabbage.friday_android.AsyncTasks.SongKickAyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.SunRiseAsyncTask;
+
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -31,13 +34,12 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     public TimeBasedExecutor(IModifyUI UI, IUpdateApp aUpdateApp) {
         modifyUI = UI;
         updateApp = aUpdateApp;
-
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("Debug","minute++");
-        modifyUI.updateTimeDisplay();
+
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -54,19 +56,25 @@ public class TimeBasedExecutor extends BroadcastReceiver {
 
 
         if(ChronoUnit.MINUTES.between(lastWeather, now)>40){
-            new AccuweatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
+            new AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
             lastWeather = now;
         }
 
-//        if (ChronoUnit.MINUTES.between(lastSongkickFetch, now)>1440){
-//            new SongKickAyncTask(modifyUI).execute();
-//            lastSongkickFetch = now;
-//        }
 
+    }
+
+    void onStartTasks(){
+        modifyUI.updateTimeDisplay();
+        new SongKickAyncTask(modifyUI).execute();
+        new AccuweatherForecastWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
+        new AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
+        new SunRiseAsyncTask().execute();
     }
 
 
     void executeDailyTasks(){
         new SongKickAyncTask(modifyUI).execute();
+        new AccuweatherForecastWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(),modifyUI).execute();
+        new SunRiseAsyncTask().execute();
     }
 }

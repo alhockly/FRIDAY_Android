@@ -9,7 +9,9 @@ import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser;
 public interface IModifyUI {
 
     void updateTimeDisplay();
-    void refreshWeatherDisplay(GsonWeatherForecastParser jsonObject, GsonCurrentWeatherParser currentWeatherjsonObj);
+    void refreshForecastDisplay(GsonWeatherForecastParser jsonObject);
+    void refreshCurrentWeatherDisplay(GsonCurrentWeatherParser currentWeatherjsonObj);
     void refreshSongKickDisplay(GsonSongKickParser jsonObject);
+    void showException(String exceptionText);
     Context getContext();
 }

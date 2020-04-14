@@ -20,7 +20,7 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.kushcabbage.friday_android.AsyncTasks.AccuweatherAsyncTask;
+import com.kushcabbage.friday_android.AsyncTasks.AccuweatherCurrentWeatherAsyncTask;
 import com.kushcabbage.friday_android.AsyncTasks.SpotifyAuthAsyncTask;
 import com.kushcabbage.friday_android.databinding.ActivityMainBinding;
 import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser;
@@ -78,10 +78,9 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
         SetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME,"328328");
         SetKey(Util.ACCUWEATHER_APIKEY_NAME,"jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP");
+        SetKey(Util.IPLOCATION_APIKEY_NAME,"9c96f50a80144c92b8d0e448a152e727");
 
-        updateTimeDisplay();
-        new SongKickAyncTask(this).execute();
-        new AccuweatherAsyncTask(GetKey(Util.ACCUWEATHER_APIKEY_NAME),GetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME),this).execute();
+        iTimeBasedExecutor.onStartTasks();
 
         new SpotifyAuthAsyncTask().execute();
 
@@ -150,28 +149,34 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         iBinding.DateDisplay.setText(date+" "+month);
     }
 
-
     @Override
-    public void refreshWeatherDisplay(GsonWeatherForecastParser forcastjson, GsonCurrentWeatherParser currentConditionsJson) {
-        if (forcastjson != null) {
+    public void refreshForecastDisplay(GsonWeatherForecastParser jsonObject) {
+        if (jsonObject != null) {
             try {
-                float maxTemp = forcastjson.DailyForecasts.get(0).minTemp();
-                float minTemp = forcastjson.DailyForecasts.get(0).maxTemp();
+                float maxTemp = jsonObject.DailyForecasts.get(0).maxTemp();
+                float minTemp = jsonObject.DailyForecasts.get(0).minTemp();
                 iBinding.TempRange.setText(minTemp + "°C/" + maxTemp + "°C");
 
             } catch (Exception e) {     //development builds be like
                 e.printStackTrace();
             }
         }
+    }
 
-        if (currentConditionsJson != null) {
+    @Override
+    public void refreshCurrentWeatherDisplay(GsonCurrentWeatherParser currentWeatherjsonObj) {
+        if (currentWeatherjsonObj != null) {
             try {
-                iBinding.CurrentTemp.setText(String.valueOf(currentConditionsJson.Temperature.Metric.Value) + "°C");
+                iBinding.CurrentTemp.setText(String.valueOf(currentWeatherjsonObj.Temperature.Metric.Value) + "°C");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+
+
+
 
     @Override
     public void refreshSongKickDisplay(GsonSongKickParser jsonObject) {
@@ -187,6 +192,11 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         songkickRecyclerViewAdapter.setCalenderEntries(jsonObject.getevents());
         songkickRecyclerViewAdapter.notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void showException(String exceptionText) {
+        iBinding.ExceptionText.setText(exceptionText);
     }
 
 
