@@ -40,10 +40,9 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("Debug","minute++");
 
+        modifyUI.updateTimeDisplay();
 
         LocalDateTime now = LocalDateTime.now();
-
-
         if(ChronoUnit.HOURS.between(lastHourly, now)>=1){
             lastDaily=now;
             new AppUpdateAsyncTask(context,updateApp).execute(githubUpdateURL);
