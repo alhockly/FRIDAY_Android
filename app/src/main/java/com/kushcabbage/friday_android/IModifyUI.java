@@ -12,6 +12,7 @@ public interface IModifyUI {
     void refreshForecastDisplay(GsonWeatherForecastParser jsonObject);
     void refreshCurrentWeatherDisplay(GsonCurrentWeatherParser currentWeatherjsonObj);
     void refreshSongKickDisplay(GsonSongKickParser jsonObject);
+    void refreshSunriseSet(String sunrise, String sunset);
     void showException(String exceptionText);
     Context getContext();
 }

@@ -27,6 +27,7 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
     String url;
     String apiKey;
 
+    Exception exception;
 
     String URL_END = "?metric=true&apikey=";
     String FORECAST_URL = "/forecasts/v1/daily/5day/";
@@ -69,7 +70,7 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
 
 
         } catch (RequestsExceededException e) {
-            e.printToScreen(modifyUI);
+            exception =e;
         } catch (JsonSyntaxException e) {
             Log.d("Debug", "HTTP GET failed");
             e.printStackTrace();
@@ -84,8 +85,15 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if(weatherForcastJsonObj != null){
-            modifyUI.refreshForecastDisplay(weatherForcastJsonObj);
+        if(exception==null) {
+            if (exception instanceof RequestsExceededException) {
+                ((RequestsExceededException) exception).printToScreen(modifyUI);
+            }
+        }else {
+
+            if (weatherForcastJsonObj != null) {
+                modifyUI.refreshForecastDisplay(weatherForcastJsonObj);
+            }
         }
     }
 }

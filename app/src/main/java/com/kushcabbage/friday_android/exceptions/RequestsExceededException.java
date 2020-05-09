@@ -9,4 +9,9 @@ public class RequestsExceededException extends Exception {
         modifyUI.showException("Accuweather requests exceeded");
 
     }
+
+    public void printStackTrace(IModifyUI modifyUI) {
+        super.printStackTrace();
+
+    }
 }

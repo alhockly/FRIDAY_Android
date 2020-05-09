@@ -20,15 +20,15 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.kushcabbage.friday_android.AsyncTasks.AccuweatherCurrentWeatherAsyncTask;
 import com.kushcabbage.friday_android.AsyncTasks.SpotifyAuthAsyncTask;
 import com.kushcabbage.friday_android.databinding.ActivityMainBinding;
 import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser;
 import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser;
-import com.kushcabbage.friday_android.AsyncTasks.SongKickAyncTask;
 import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser;
 import com.kushcabbage.friday_android.views.SongKickRecyclerSpacer;
 
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,11 +42,9 @@ import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 
-public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp{
+public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp, IApiMVC.ViewOps{
     TimeBasedExecutor iTimeBasedExecutor;
     ActivityMainBinding iBinding;
-
-    String githubUpdateURL = "https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk";
 
     SongkickRecyclerViewAdapter songkickRecyclerViewAdapter = null;
 
@@ -59,6 +57,8 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     private static final String LOG_TAG = MainActivity.class.getName();
 
 
+    private HttpServer httpServer;
+    private TaskHandler taskHandler;
 
 
     @Override
@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         setContentView(R.layout.activity_main);
         Util.iUpdateApp = this;
         iTimeBasedExecutor = new TimeBasedExecutor(this,this);
+        taskHandler = new TaskHandler(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
         registerReceiver(iTimeBasedExecutor,filter);
@@ -95,7 +96,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
 
         try {
-            new HttpServer();
+           httpServer = new HttpServer(this, taskHandler);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,6 +125,12 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                 return;
             }
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        httpServer.stop();
     }
 
     public void hideNavbar(){
@@ -167,7 +174,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     public void refreshCurrentWeatherDisplay(GsonCurrentWeatherParser currentWeatherjsonObj) {
         if (currentWeatherjsonObj != null) {
             try {
-                iBinding.CurrentTemp.setText(String.valueOf(currentWeatherjsonObj.Temperature.Metric.Value) + "°C");
+                iBinding.CurrentTemp.setText(currentWeatherjsonObj.Temperature.Metric.Value + "°C");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -351,4 +358,18 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
+    @Override
+    public void displayOnOff(boolean isOn) {
+        if(isOn){
+            iBinding.getRoot().setVisibility(View.VISIBLE);
+        }
+        else{
+            iBinding.getRoot().setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void refreshSunriseSet(@NotNull String sunrise, @NotNull String sunset) {
+        iBinding.SunRiseSet.setText(sunrise+" | "+sunset);
+    }
 }

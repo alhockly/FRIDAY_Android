@@ -26,6 +26,7 @@ public class AccuweatherCurrentWeatherAsyncTask extends AsyncTask<Void,String,Vo
     String url;
     String apiKey;
 
+    Exception exception = null;
 
     String URL_END = "?metric=true&apikey=";
 
@@ -60,8 +61,8 @@ public class AccuweatherCurrentWeatherAsyncTask extends AsyncTask<Void,String,Vo
             Response response = client.newCall(currentConditionsRequest).execute();
             String jsonString = response.body().string();
 
-            Type founderListType = new TypeToken<ArrayList<GsonCurrentWeatherParser>>(){}.getType();
-            List<GsonCurrentWeatherParser> currentWeatherList = new Gson().fromJson(jsonString, founderListType);
+            Type currentWeatherArrayType = new TypeToken<ArrayList<GsonCurrentWeatherParser>>(){}.getType();
+            List<GsonCurrentWeatherParser> currentWeatherList = new Gson().fromJson(jsonString, currentWeatherArrayType);
 
             if (currentWeatherList == null) {
                 throw new RequestsExceededException();
@@ -70,10 +71,13 @@ public class AccuweatherCurrentWeatherAsyncTask extends AsyncTask<Void,String,Vo
 
 
         } catch (IOException e) {
+            exception =e;
             e.printStackTrace();
         } catch (RequestsExceededException e) {
-            e.printToScreen(modifyUI);
+            exception = e;
+            return null;
         } catch (JsonSyntaxException e){
+            exception = e;
             e.printStackTrace();
         }
 
@@ -85,8 +89,15 @@ public class AccuweatherCurrentWeatherAsyncTask extends AsyncTask<Void,String,Vo
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if(currentWeatherJsonObj != null){
-            modifyUI.refreshCurrentWeatherDisplay(currentWeatherJsonObj);
+
+        if(exception==null){
+            if(exception instanceof RequestsExceededException){
+                ((RequestsExceededException)exception).printToScreen(modifyUI);
+            }
+        } else {
+            if (currentWeatherJsonObj != null) {
+                modifyUI.refreshCurrentWeatherDisplay(currentWeatherJsonObj);
+            }
         }
     }
 }
