@@ -14,18 +14,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRecyclerViewAdapter.ViewHolder>  {
+public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRecyclerViewAdapter.ViewHolder> {
 
     GsonSongKickParser songKickData;
     IModifyUI modifyUI;
     List<GsonSongKickParser.CalenderEntry> calenderEntries = new ArrayList<>();
 
-    String[] months = {"Jan","Feb","March","April","May","June","July","Aug","Sep","Oct","Nov","Dec"};
+    String[] months = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-    public SongkickRecyclerViewAdapter(GsonSongKickParser aGson, IModifyUI modUI){
-        try{
+    public SongkickRecyclerViewAdapter(GsonSongKickParser aGson, IModifyUI modUI) {
+        try {
             calenderEntries = aGson.getevents();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
         modifyUI = modUI;
 
@@ -38,9 +38,9 @@ public class SongkickRecyclerViewAdapter extends RecyclerView.Adapter<SongkickRe
     @NonNull
     @Override
     public SongkickRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       LayoutInflater inflater = LayoutInflater.from(modifyUI.getContext());
+        LayoutInflater inflater = LayoutInflater.from(modifyUI.getContext());
 
-        View view = inflater.inflate(R.layout.songkick_recycler_row, parent,false);
+        View view = inflater.inflate(R.layout.songkick_recycler_row, parent, false);
         return new ViewHolder(view);
     }
 

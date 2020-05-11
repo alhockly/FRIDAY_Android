@@ -5,23 +5,18 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.kushcabbage.friday_android.IModifyUI;
 import com.kushcabbage.friday_android.exceptions.RequestsExceededException;
-import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser;
 import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,Void> {
+public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void, String, Void> {
 
     IModifyUI modifyUI;
     String url;
@@ -40,7 +35,7 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
 
     //TODO store key in keystore and city code in sharedprefs, also create method to get key from ip address
 
-    public AccuweatherForecastWeatherAsyncTask(String ApiKey, String location_key, IModifyUI modUI){
+    public AccuweatherForecastWeatherAsyncTask(String ApiKey, String location_key, IModifyUI modUI) {
         modifyUI = modUI;
         iLocationKey = location_key;
         apiKey = ApiKey;
@@ -54,7 +49,7 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
     @Override
     protected Void doInBackground(Void... voids) {
 
-        url = BASE_URL+ FORECAST_URL + iLocationKey + URL_END + apiKey;
+        url = BASE_URL + FORECAST_URL + iLocationKey + URL_END + apiKey;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
@@ -70,7 +65,7 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
 
 
         } catch (RequestsExceededException e) {
-            exception =e;
+            exception = e;
         } catch (JsonSyntaxException e) {
             Log.d("Debug", "HTTP GET failed");
             e.printStackTrace();
@@ -85,11 +80,11 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void,String,V
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if(exception==null) {
+        if (exception == null) {
             if (exception instanceof RequestsExceededException) {
                 ((RequestsExceededException) exception).printToScreen(modifyUI);
             }
-        }else {
+        } else {
 
             if (weatherForcastJsonObj != null) {
                 modifyUI.refreshForecastDisplay(weatherForcastJsonObj);

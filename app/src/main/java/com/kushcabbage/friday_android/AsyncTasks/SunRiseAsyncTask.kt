@@ -11,8 +11,6 @@ import okhttp3.Request
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.ExperimentalTime
-import kotlin.time.hours
-import kotlin.time.minutes
 
 class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
 
@@ -21,14 +19,14 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
     var sunriseApiBaseUrl = "https://api.sunrise-sunset.org/json"
     var ipLocationBaseUrl = "https://api.ipgeolocation.io/ipgeo?apiKey="
 
-    lateinit var sunriseJson : GsonSunriseApiParser
+    lateinit var sunriseJson: GsonSunriseApiParser
 
     override fun doInBackground(vararg params: Void?): String {
 
         val client = OkHttpClient()
 
-        if(Util.LocationLat==0.0f || Util.LocationLon==0.0f){
-            val request: Request = Request.Builder().url(ipLocationBaseUrl+Util.apiKeyMap.get(Util.IPLOCATION_APIKEY_NAME)).build()
+        if (Util.LocationLat == 0.0f || Util.LocationLon == 0.0f) {
+            val request: Request = Request.Builder().url(ipLocationBaseUrl + Util.apiKeyMap.get(Util.IPLOCATION_APIKEY_NAME)).build()
 
             try {
                 val response = client.newCall(request).execute()
@@ -37,11 +35,11 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
 
                 Util.LocationLat = locationJson.latitude.toFloat()
                 Util.LocationLon = locationJson.longitude.toFloat()
-            }catch (e : Exception){
+            } catch (e: Exception) {
             }
         }
 
-        var sunriseUrl = sunriseApiBaseUrl+"?lat="+Util.LocationLat+"&lng="+Util.LocationLon
+        var sunriseUrl = sunriseApiBaseUrl + "?lat=" + Util.LocationLat + "&lng=" + Util.LocationLon
         val request: Request = Request.Builder().url(sunriseUrl).build()
 
         try {
@@ -49,7 +47,7 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
             val jsonString = response.body!!.string()
 
             sunriseJson = Gson().fromJson(jsonString, GsonSunriseApiParser::class.java)
-        }catch (e : Exception){
+        } catch (e: Exception) {
         }
         return ""
     }
@@ -67,10 +65,8 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
         val sunsetDate: Date = apiDateFormat.parse(sunset)
 
         var timeFormat = SimpleDateFormat("HH:mm a")
-        sunrise= timeFormat.format(sunriseDate)
+        sunrise = timeFormat.format(sunriseDate)
         sunset = timeFormat.format(sunsetDate)
-        modUI.refreshSunriseSet(sunrise,sunset)
-
-
+        modUI.refreshSunriseSet(sunrise, sunset)
     }
 }

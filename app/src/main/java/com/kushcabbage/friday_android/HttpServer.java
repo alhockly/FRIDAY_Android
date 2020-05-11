@@ -1,29 +1,28 @@
 package com.kushcabbage.friday_android;
 
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+
 import fi.iki.elonen.NanoHTTPD;
 
 /*api definition
-*
-* api runs on port 8080
-*
-* e.g ipAdress:8080/api/
-*
-*  calls to manipulate the view call at /view/
-*
-*  calls to access data at /data/ using GET method to read and POST to request a write
-*
-* e.g
-*   baseUrl/api/view/display/off
-*   baseUrl/api/data/uptime
-*   /api/data/refresh/currentTemp
-*
-*
-* */
+ *
+ * api runs on port 8080
+ *
+ * e.g ipAdress:8080/api/
+ *
+ *  calls to manipulate the view call at /view/
+ *
+ *  calls to access data at /data/ using GET method to read and POST to request a write
+ *
+ * e.g
+ *   baseUrl/api/view/display/off
+ *   baseUrl/api/data/uptime
+ *   /api/data/refresh/currentTemp
+ *
+ *
+ * */
 
 public class HttpServer extends NanoHTTPD {
     private String TAG = "HTTPSERVER";
@@ -42,16 +41,16 @@ public class HttpServer extends NanoHTTPD {
     public Response serve(IHTTPSession session) {
         String htmlOpen = "<html><body>\n";
         String htmlClose = "</body></html>\n";
-        String htmlbody ="";
+        String htmlbody = "";
         String[] sessionUri = session.getUri().toLowerCase().split("/");
-        if(!sessionUri[1].equals("api")){
-            return newFixedLengthResponse( htmlOpen + "hello" + htmlClose);
+        if (!sessionUri[1].equals("api")) {
+            return newFixedLengthResponse(htmlOpen + "hello" + htmlClose);
         } else {
-            if(sessionUri[2].equals("view")){
-                return viewApiHandler(getSliceOfArray(sessionUri,3,sessionUri.length));
+            if (sessionUri[2].equals("view")) {
+                return viewApiHandler(getSliceOfArray(sessionUri, 3, sessionUri.length));
             }
-            if(sessionUri[2].equals("data")){
-                return dataApiHandler(getSliceOfArray(sessionUri,3,sessionUri.length));
+            if (sessionUri[2].equals("data")) {
+                return dataApiHandler(getSliceOfArray(sessionUri, 3, sessionUri.length));
 
             }
         }
@@ -59,9 +58,9 @@ public class HttpServer extends NanoHTTPD {
     }
 
 
-    public Response viewApiHandler(@NotNull String[] aUri){
-        if(aUri[0].equals("display")){
-            if(aUri[1].equals("off")){
+    public Response viewApiHandler(@NotNull String[] aUri) {
+        if (aUri[0].equals("display")) {
+            if (aUri[1].equals("off")) {
                 viewInterface.displayOnOff(false);
             } else {
                 viewInterface.displayOnOff(true);
@@ -71,9 +70,9 @@ public class HttpServer extends NanoHTTPD {
         return newFixedLengthResponse("");
     }
 
-    public Response dataApiHandler(String[] aUri){
-        if(aUri[0].equals("refresh")){
-            if(aUri[1].equals("currenttemp")){
+    public Response dataApiHandler(String[] aUri) {
+        if (aUri[0].equals("refresh")) {
+            if (aUri[1].equals("currenttemp")) {
                 dataInterface.refreshCurrentTemp();
                 return newFixedLengthResponse("Current temp refreshed");
             }
@@ -81,7 +80,6 @@ public class HttpServer extends NanoHTTPD {
         }
         return newFixedLengthResponse("");
     }
-
 
 
     public static String[] getSliceOfArray(String[] arr, int start, int end) {

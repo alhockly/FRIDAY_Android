@@ -2,7 +2,7 @@ package com.kushcabbage.friday_android
 
 import com.kushcabbage.friday_android.AsyncTasks.AccuweatherCurrentWeatherAsyncTask
 
-class TaskHandler(UiModify : IModifyUI) : IApiMVC.DataControllerOps {
+class TaskHandler(UiModify: IModifyUI) : IApiMVC.DataControllerOps {
 
     var iModifyUI = UiModify
 

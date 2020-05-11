@@ -11,11 +11,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
+public class SpotifyAuthAsyncTask extends AsyncTask<Void, String, Void> {
 
     String url;
 
-    String BASE_URL="https://accounts.spotify.com/";
+    String BASE_URL = "https://accounts.spotify.com/";
 
     String AUTH_ENDPOINT = "authorize";
 
@@ -27,7 +27,7 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
     @Override
     protected Void doInBackground(Void... voids) {
 
-        url = BASE_URL + AUTH_ENDPOINT +"?client_id=" + clientID + "&scope=" + scope + "&response_type=code" + "&redirect_uri=http://localhost/";
+        url = BASE_URL + AUTH_ENDPOINT + "?client_id=" + clientID + "&scope=" + scope + "&response_type=code" + "&redirect_uri=http://localhost/";
 
 
         try {
@@ -38,17 +38,11 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
             String jsonString = response.body().string();
 
 
-            Util.apiKeyMap.put(Util.SPOTIFY_AUTHKEY_NAME,"key");
+            Util.apiKeyMap.put(Util.SPOTIFY_AUTHKEY_NAME, "key");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
-
-
-
 
 
         return null;
@@ -57,16 +51,14 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void,String,Void> {
 
 
     public Response OkHttpCall() throws IOException {
-        Response response=null;
+        Response response = null;
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
 
-            response = client.newCall(request).execute();
-            String jsonString = response.body().string();
-
-
+        response = client.newCall(request).execute();
+        String jsonString = response.body().string();
 
 
         return response;

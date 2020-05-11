@@ -1,6 +1,6 @@
 package com.kushcabbage.friday_android.gsonParsers;
 
-public class GsonCurrentWeatherParser  {
+public class GsonCurrentWeatherParser {
 
 
     public TemperatureObj Temperature;
@@ -11,7 +11,7 @@ public class GsonCurrentWeatherParser  {
 
     }
 
-    public class TemperatureDetails{
+    public class TemperatureDetails {
         public float Value;
     }
 

@@ -1,6 +1,5 @@
 package com.kushcabbage.friday_android;
 
-import androidx.annotation.NonNull;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
@@ -27,7 +28,6 @@ import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser;
 import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser;
 import com.kushcabbage.friday_android.views.SongKickRecyclerSpacer;
 
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
@@ -42,7 +43,7 @@ import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 
-public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp, IApiMVC.ViewOps{
+public class MainActivity extends Activity implements IModifyUI, RecognitionListener, IKeyPass, IUpdateApp, IApiMVC.ViewOps {
     TimeBasedExecutor iTimeBasedExecutor;
     ActivityMainBinding iBinding;
 
@@ -65,21 +66,20 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Util.iUpdateApp = this;
-        iTimeBasedExecutor = new TimeBasedExecutor(this,this);
+        iTimeBasedExecutor = new TimeBasedExecutor(this, this);
         taskHandler = new TaskHandler(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_TICK);
-        registerReceiver(iTimeBasedExecutor,filter);
+        registerReceiver(iTimeBasedExecutor, filter);
 
         iBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         iBinding.ParentView.setKeepScreenOn(true);
         iBinding.SongKickList.setFocusable(false);
         hideNavbar();
 
-        SetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME,"328328");
-        SetKey(Util.ACCUWEATHER_APIKEY_NAME,"jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP");
-        SetKey(Util.IPLOCATION_APIKEY_NAME,"9c96f50a80144c92b8d0e448a152e727");
+        SetKey(Util.ACCUWEATHER_LOCATIONKEY_NAME, "328328");
+        SetKey(Util.ACCUWEATHER_APIKEY_NAME, "jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP");
+        SetKey(Util.IPLOCATION_APIKEY_NAME, "9c96f50a80144c92b8d0e448a152e727");
 
         iTimeBasedExecutor.onStartTasks();
 
@@ -91,12 +91,12 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
                         Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 
         } else {
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSIONS_REQUEST_CODE);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
         }
 
 
         try {
-           httpServer = new HttpServer(this, taskHandler);
+            httpServer = new HttpServer(this, taskHandler);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -133,7 +133,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         httpServer.stop();
     }
 
-    public void hideNavbar(){
+    public void hideNavbar() {
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -145,15 +145,17 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     public void updateTimeDisplay() {
         Calendar cal = Calendar.getInstance();
         String hour = String.valueOf(cal.get(Calendar.HOUR));
-        if (hour.equals("0")){ hour = hour.replace("0","12");}
-        String minutes = String.valueOf(cal.get(Calendar.MINUTE));
-        if (minutes.length()<2){
-            minutes="0"+minutes;
+        if (hour.equals("0")) {
+            hour = hour.replace("0", "12");
         }
-        iBinding.TimeDisplay.setText(hour+":"+minutes);
+        String minutes = String.valueOf(cal.get(Calendar.MINUTE));
+        if (minutes.length() < 2) {
+            minutes = "0" + minutes;
+        }
+        iBinding.TimeDisplay.setText(hour + ":" + minutes);
         int date = cal.get(Calendar.DATE);
-        String month = cal.getDisplayName(Calendar.MONTH,Calendar.LONG,Locale.getDefault());
-        iBinding.DateDisplay.setText(date+" "+month);
+        String month = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+        iBinding.DateDisplay.setText(date + " " + month);
     }
 
     @Override
@@ -182,9 +184,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     }
 
 
-
-
-
     @Override
     public void refreshSongKickDisplay(GsonSongKickParser jsonObject) {
 
@@ -209,7 +208,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void installApp(File apkFile) {
-        apkFile.setReadable(true,false);
+        apkFile.setReadable(true, false);
         Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
         intent.addCategory("android.intent.category.DEFAULT");
         Uri fileUri = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", apkFile);
@@ -222,13 +221,13 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void SetKey(String Name, String Key) {
-        Util.apiKeyMap.put(Name,Key);
+        Util.apiKeyMap.put(Name, Key);
     }
 
     @Override
     public String GetKey(String Name) {
 
-        if(Util.apiKeyMap.containsKey(Name)){
+        if (Util.apiKeyMap.containsKey(Name)) {
             return Util.apiKeyMap.get(Name).toString();
         } else {
             return null;
@@ -240,7 +239,6 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
     public Context getContext() {
         return getApplicationContext();
     }
-
 
 
     @Override
@@ -289,10 +287,10 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
             mRecognizer.addListener(this);
             mRecognizer.startListening(WAKEWORD_SEARCH);
             Log.d(LOG_TAG, "... listening");
-            Toast.makeText(getContext(),"....Listening",Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "....Listening", Toast.LENGTH_LONG);
         } catch (IOException e) {
             Log.e(LOG_TAG, e.toString());
-            Toast.makeText(getContext(),"Couldn't get microphone",Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "Couldn't get microphone", Toast.LENGTH_LONG);
         }
     }
 
@@ -321,7 +319,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
 
                 startActivity(new Intent(this, MainActivity.class));
-                Toast.makeText(getContext(),"DETECTED HOTWORD!",Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "DETECTED HOTWORD!", Toast.LENGTH_SHORT);
                 ///////////////
 //                Intent intent = new Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE);
 //                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -360,16 +358,15 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
 
     @Override
     public void displayOnOff(boolean isOn) {
-        if(isOn){
+        if (isOn) {
             iBinding.getRoot().setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             iBinding.getRoot().setVisibility(View.INVISIBLE);
         }
     }
 
     @Override
     public void refreshSunriseSet(@NotNull String sunrise, @NotNull String sunset) {
-        iBinding.SunRiseSet.setText(sunrise+" | "+sunset);
+        iBinding.SunRiseSet.setText(sunrise + " | " + sunset);
     }
 }

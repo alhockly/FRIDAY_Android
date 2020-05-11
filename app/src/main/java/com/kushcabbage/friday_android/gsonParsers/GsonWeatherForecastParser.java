@@ -8,16 +8,17 @@ public class GsonWeatherForecastParser {
     public List<dailyForecast> DailyForecasts;
 
 
-    public class dailyForecast{
+    public class dailyForecast {
         String Link;
         DayNightClass Day;
         DayNightClass Night;
         public TemperatureClass Temperature;
 
-        public float minTemp(){
+        public float minTemp() {
             return Temperature.Minimum.Value;
         }
-        public float maxTemp(){
+
+        public float maxTemp() {
             return Temperature.Maximum.Value;
         }
     }
@@ -29,12 +30,12 @@ public class GsonWeatherForecastParser {
 
     }
 
-    class TemperatureClass{
+    class TemperatureClass {
         MinMaxTempClass Minimum;
         MinMaxTempClass Maximum;
     }
 
-    class MinMaxTempClass{
+    class MinMaxTempClass {
         float Value;
     }
 }

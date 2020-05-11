@@ -4,10 +4,10 @@ public class GsonSunriseApiParser {
 
     public Results results;
 
-    public class Results{
+    public class Results {
 
-       public String sunrise;
-       public String sunset;
+        public String sunrise;
+        public String sunset;
 
     }
 

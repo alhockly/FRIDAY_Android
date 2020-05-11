@@ -11,21 +11,19 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class SpotifyPlayingAsyncTask extends AsyncTask<Void,String,Void> {
+public class SpotifyPlayingAsyncTask extends AsyncTask<Void, String, Void> {
 
     IModifyUI modifyUI;
     String url;
 
-    String BASE_URL="https://api.spotify.com";
+    String BASE_URL = "https://api.spotify.com";
     String NOWPLAYING_ENDPOINT = "/v1/me/player/currently-playing";
 
 
-
-    public SpotifyPlayingAsyncTask(IModifyUI modUI, String authKey){
+    public SpotifyPlayingAsyncTask(IModifyUI modUI, String authKey) {
         modifyUI = modUI;
 
     }
-
 
 
     @Override
@@ -46,28 +44,20 @@ public class SpotifyPlayingAsyncTask extends AsyncTask<Void,String,Void> {
         }
 
 
-
-
-
-
-
-
         return null;
 
     }
 
 
     public Response OkHttpCall() throws IOException {
-        Response response=null;
+        Response response = null;
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
 
-            response = client.newCall(request).execute();
-            String jsonString = response.body().string();
-
-
+        response = client.newCall(request).execute();
+        String jsonString = response.body().string();
 
 
         return response;
