@@ -52,18 +52,18 @@ public class TimeBasedExecutor extends BroadcastReceiver {
 
         if(now.isAfter(tomorrowMidnight) && !isDailySynced){
             isDailySynced = true;
-            executeDailyTasks();
             lastDaily = now;
+            executeDailyTasks(context);
         }
 
         if (ChronoUnit.HOURS.between(lastHourly, now) >= 1) {
-            lastDaily = now;
-            new AppUpdateAsyncTask(context, updateApp).execute(githubUpdateURL);
+            lastHourly = now;
+            executeHourlyTasks(context);
         }
 
         if (ChronoUnit.DAYS.between(lastDaily, now) >= 1) {
             lastDaily = now;
-            executeDailyTasks();
+            executeDailyTasks(context);
         }
 
         if (ChronoUnit.MINUTES.between(lastWeather, now) > 40) {
@@ -72,8 +72,9 @@ public class TimeBasedExecutor extends BroadcastReceiver {
         }
     }
 
-    void onStartTasks() {
+    void onStartTasks(Context aContext) {
         modifyUI.updateTimeDisplay();
+        new AppUpdateAsyncTask(aContext, updateApp).execute(githubUpdateURL);
         new SongKickAyncTask(modifyUI).execute();
         new AccuweatherForecastWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
         new AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
@@ -81,10 +82,13 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     }
 
 
-    void executeDailyTasks() {
+    void executeDailyTasks(Context aContext) {
         new SongKickAyncTask(modifyUI).execute();
         new AccuweatherForecastWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
-        new AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
         new SunRiseAsyncTask(modifyUI).execute();
+    }
+
+    void executeHourlyTasks(Context aContext){
+        new AppUpdateAsyncTask(aContext, updateApp).execute(githubUpdateURL);
     }
 }

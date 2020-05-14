@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements IModifyUI, RecognitionList
         SetKey(Util.ACCUWEATHER_APIKEY_NAME, "jhAiVVyMWM8sE77cwPMxBZzeGMJYuamP");
         SetKey(Util.IPLOCATION_APIKEY_NAME, "9c96f50a80144c92b8d0e448a152e727");
 
-        iTimeBasedExecutor.onStartTasks();
+        iTimeBasedExecutor.onStartTasks(getContext());
 
         new SpotifyAuthAsyncTask().execute();
 
