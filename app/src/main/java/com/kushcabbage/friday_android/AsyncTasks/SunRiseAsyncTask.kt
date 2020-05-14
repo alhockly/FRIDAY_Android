@@ -9,7 +9,6 @@ import com.kushcabbage.friday_android.gsonParsers.GsonSunriseApiParser
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.time.ExperimentalTime
 
 class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
@@ -59,14 +58,14 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
         var sunrise = sunriseJson.results.sunrise
         var sunset = sunriseJson.results.sunset
 
-        val pattern = "HH:mm:ss a"
+        val pattern = "hh:mm:ss a"
         val apiDateFormat = SimpleDateFormat(pattern)
-        val sunriseDate: Date = apiDateFormat.parse(sunrise)
-        val sunsetDate: Date = apiDateFormat.parse(sunset)
+        val sunriseDate = apiDateFormat.parse(sunrise)
+        val sunsetDate = apiDateFormat.parse(sunset)
 
-        var timeFormat = SimpleDateFormat("HH:mm a")
-        sunrise = timeFormat.format(sunriseDate)
-        sunset = timeFormat.format(sunsetDate)
+        var mirrorTimeFormat = SimpleDateFormat("HH:mm a")
+        sunrise = mirrorTimeFormat.format(sunriseDate)
+        sunset = mirrorTimeFormat.format(sunsetDate)
         modUI.refreshSunriseSet(sunrise, sunset)
     }
 }
