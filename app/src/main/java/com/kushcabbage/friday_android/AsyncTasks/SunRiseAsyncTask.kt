@@ -63,7 +63,7 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
         val sunriseDate = apiDateFormat.parse(sunrise)
         val sunsetDate = apiDateFormat.parse(sunset)
 
-        var mirrorTimeFormat = SimpleDateFormat("HH:mm a")
+        var mirrorTimeFormat = SimpleDateFormat("hh:mm a")
         sunrise = mirrorTimeFormat.format(sunriseDate)
         sunset = mirrorTimeFormat.format(sunsetDate)
         modUI.refreshSunriseSet(sunrise, sunset)

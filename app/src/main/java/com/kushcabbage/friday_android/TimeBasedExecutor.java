@@ -16,11 +16,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-
 public class TimeBasedExecutor extends BroadcastReceiver {
 
     //TODO check internet connection
-
     IModifyUI modifyUI;
     IUpdateApp updateApp;
 
