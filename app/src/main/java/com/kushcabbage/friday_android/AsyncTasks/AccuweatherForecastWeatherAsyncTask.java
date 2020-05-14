@@ -80,7 +80,7 @@ public class AccuweatherForecastWeatherAsyncTask extends AsyncTask<Void, String,
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if (exception == null) {
+        if (exception != null) {
             if (exception instanceof RequestsExceededException) {
                 ((RequestsExceededException) exception).printToScreen(modifyUI);
             }

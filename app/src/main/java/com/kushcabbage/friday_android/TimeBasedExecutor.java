@@ -84,6 +84,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     void executeDailyTasks() {
         new SongKickAyncTask(modifyUI).execute();
         new AccuweatherForecastWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
+        new AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
         new SunRiseAsyncTask(modifyUI).execute();
     }
 }

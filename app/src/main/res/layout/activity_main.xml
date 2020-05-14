@@ -52,7 +52,7 @@
             app:layout_constraintStart_toStartOf="@id/DateDisplay"
             app:layout_constraintEnd_toEndOf="@id/DateDisplay"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="4dp"
             tools:text="6:34 | 23:34"
             android:textSize="18sp"
             />
