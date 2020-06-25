@@ -1,4 +1,8 @@
 # FRIDAY_Android
+![]()
+<img src="https://raw.githubusercontent.com/alhockly/FRIDAY_Android/master/preview_main.jpg"
+     style="height:100px;" />
+
 Parts
 
 + Android running on a raspberry pi 3 - https://konstakang.com/devices/rpi3/LineageOS16.0/
