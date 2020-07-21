@@ -95,7 +95,7 @@ class AppUpdateAsyncTask(private val context: Context, internal var iUpdateApp: 
     }
 
 
-    override fun onPostExecute(aVoid: Void) {
+    override fun onPostExecute(aVoid: Void?) {
 
 
         if (downloadedVersionName != null) {

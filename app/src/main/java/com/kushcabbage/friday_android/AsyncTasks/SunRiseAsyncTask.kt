@@ -18,7 +18,7 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
     var sunriseApiBaseUrl = "https://api.sunrise-sunset.org/json"
     var ipLocationBaseUrl = "https://api.ipgeolocation.io/ipgeo?apiKey="
 
-    lateinit var sunriseJson: GsonSunriseApiParser
+    var sunriseJson: GsonSunriseApiParser? = null
 
     override fun doInBackground(vararg params: Void?): String {
 
@@ -55,17 +55,19 @@ class SunRiseAsyncTask(iModifyUI: IModifyUI) : AsyncTask<Void, Void, String>() {
     @ExperimentalTime
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
-        var sunrise = sunriseJson.results.sunrise
-        var sunset = sunriseJson.results.sunset
+        if(sunriseJson != null) {
+            var sunrise = sunriseJson!!.results.sunrise
+            var sunset = sunriseJson!!.results.sunset
 
-        val pattern = "hh:mm:ss a"
-        val apiDateFormat = SimpleDateFormat(pattern)
-        val sunriseDate = apiDateFormat.parse(sunrise)
-        val sunsetDate = apiDateFormat.parse(sunset)
+            val pattern = "hh:mm:ss a"
+            val apiDateFormat = SimpleDateFormat(pattern)
+            val sunriseDate = apiDateFormat.parse(sunrise)
+            val sunsetDate = apiDateFormat.parse(sunset)
 
-        var mirrorTimeFormat = SimpleDateFormat("hh:mm a")
-        sunrise = mirrorTimeFormat.format(sunriseDate)
-        sunset = mirrorTimeFormat.format(sunsetDate)
-        modUI.refreshSunriseSet(sunrise, sunset)
+            var mirrorTimeFormat = SimpleDateFormat("hh:mm a")
+            sunrise = mirrorTimeFormat.format(sunriseDate)
+            sunset = mirrorTimeFormat.format(sunsetDate)
+            modUI.refreshSunriseSet(sunrise, sunset)
+        }
     }
 }
