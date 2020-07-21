@@ -12,3 +12,8 @@
 .externalNativeBuild
 .cxx
 app/google-services.json
+.idea/
+app/build/generated/
+app/build/intermediates/
+app/build/kotlin/
+app/build/tmp/

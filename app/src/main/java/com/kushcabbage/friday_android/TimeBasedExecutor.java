@@ -22,7 +22,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
     IModifyUI modifyUI;
     IUpdateApp updateApp;
 
-    String githubUpdateURL = "https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk"; //TODO move this somewhere else
+    String githubUpdateURL = "https://github.com/alhockly/FRIDAY_Android/raw/master/build.apk"; //TODO move this to data class?
 
     LocalDateTime lastWeather = LocalDateTime.now();
     LocalDateTime lastDaily = LocalDateTime.now();
@@ -72,7 +72,7 @@ public class TimeBasedExecutor extends BroadcastReceiver {
 
     void onStartTasks(Context aContext) {
         modifyUI.updateTimeDisplay();
-        new AppUpdateAsyncTask(aContext, updateApp).execute(githubUpdateURL);
+       // new AppUpdateAsyncTask(aContext, updateApp).execute(githubUpdateURL);
         new SongKickAyncTask(modifyUI).execute();
         new AccuweatherForecastWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
         new AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap.get(Util.ACCUWEATHER_APIKEY_NAME).toString(), Util.apiKeyMap.get(Util.ACCUWEATHER_LOCATIONKEY_NAME).toString(), modifyUI).execute();
