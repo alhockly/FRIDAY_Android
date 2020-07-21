@@ -38,7 +38,7 @@ public class SpotifyAuthAsyncTask extends AsyncTask<Void, String, Void> {
             String jsonString = response.body().string();
 
 
-            Util.apiKeyMap.put(Util.SPOTIFY_AUTHKEY_NAME, "key");
+            Util.INSTANCE.getApiKeyMap().put(Util.INSTANCE.getSPOTIFY_AUTHKEY_NAME(), "key");
 
         } catch (IOException e) {
             e.printStackTrace();

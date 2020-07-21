@@ -90,7 +90,7 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
 
 
         try {
-            httpServer = HttpServer(this, taskHandler)
+            httpServer = HttpServer(this, taskHandler!!)
         } catch (e: IOException) {
             e.printStackTrace()
         }
