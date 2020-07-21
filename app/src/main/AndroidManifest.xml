@@ -16,6 +16,8 @@
 
         <activity android:name="com.kushcabbage.friday_android.MainActivity"
             android:screenOrientation="landscape"
+            android:testOnly="false"
+            android:debuggable="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
