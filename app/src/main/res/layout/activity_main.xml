@@ -99,12 +99,13 @@
             tools:text="21°C/34°C" />
 
         <TextView
-            android:id="@+id/ExceptionText"
+            android:id="@+id/exception_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-
+            android:textSize="20dp"
+            android:text="sdds"
             tools:text="Here is some exception that happened :(" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

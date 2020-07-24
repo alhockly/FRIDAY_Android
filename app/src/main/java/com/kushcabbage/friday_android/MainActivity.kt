@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
 import android.speech.RecognizerIntent
@@ -17,10 +16,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import androidx.multidex.MultiDex
 import androidx.recyclerview.widget.LinearLayoutManager
 
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.kushcabbage.friday_android.AsyncTasks.SpotifyAuthAsyncTask
 import com.kushcabbage.friday_android.databinding.ActivityMainBinding
 import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser
 import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser
@@ -29,7 +27,6 @@ import com.kushcabbage.friday_android.views.SongKickRecyclerSpacer
 
 import java.io.File
 import java.io.IOException
-import java.util.ArrayList
 import java.util.Calendar
 import java.util.Locale
 
@@ -52,7 +49,7 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
 
 
     private var httpServer: HttpServer? = null
-    private var taskHandler: TaskHandler? = null
+    private var database: DataController? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +57,7 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         iTimeBasedExecutor = TimeBasedExecutor(this, this)
-        taskHandler = TaskHandler(this)
+        database = DataController(this)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         val filter = IntentFilter(Intent.ACTION_TIME_TICK)
         registerReceiver(iTimeBasedExecutor, filter)
@@ -77,8 +74,8 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
 
         iTimeBasedExecutor.onStartTasks(context)
 
-
-        //SpotifyAuthAsyncTask().execute()
+//        var spotify = Spotify()
+//        SpotifyAuthAsyncTask(spotify).execute()
 
         if (ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
@@ -90,11 +87,16 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
 
 
         try {
-            httpServer = HttpServer(this, taskHandler!!)
+            httpServer = HttpServer(this, database!!)
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 
 
@@ -188,7 +190,8 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
     }
 
     override fun showException(exceptionText: String) {
-        iBinding.ExceptionText.text = exceptionText
+        iBinding.exceptionTextview.text = exceptionText
+
     }
 
 
@@ -330,12 +333,16 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
     }
 
 
-    override fun displayOnOff(isOn: Boolean) {
+    override fun requestDisplayOnOff(isOn: Boolean) {
         if (isOn) {
             iBinding.root.visibility = View.VISIBLE
         } else {
             iBinding.root.visibility = View.INVISIBLE
         }
+    }
+
+    override fun requestSetExceptionText(text: String) {
+        showException(text)
     }
 
     override fun refreshSunriseSet(sunrise: String, sunset: String) {

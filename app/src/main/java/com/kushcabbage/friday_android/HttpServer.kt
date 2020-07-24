@@ -31,7 +31,7 @@ constructor(private val viewInterface: IApiMVC.ViewOps, private val dataInterfac
         start(SOCKET_READ_TIMEOUT, false)
     }
 
-    override fun serve(session: NanoHTTPD.IHTTPSession): NanoHTTPD.Response {
+    override fun serve(session: NanoHTTPD.IHTTPSession): Response {
         val htmlOpen = "<html><body>\n"
         val htmlClose = "</body></html>\n"
         val htmlbody = ""
@@ -39,42 +39,85 @@ constructor(private val viewInterface: IApiMVC.ViewOps, private val dataInterfac
         if (sessionUri[1] != "api") {
             return newFixedLengthResponse(htmlOpen + "hello" + htmlClose)
         } else {
-            var uriSegment = getSliceOfArray(sessionUri, 3, sessionUri.size)
-            if (uriSegment != null) {
+
+            if (sessionUri!!.size > 3) {
                 if (sessionUri[2] == "view") {
 
-                    return viewApiHandler(uriSegment)
+                    return viewApiHandler(sessionUri)
                 }
                 if (sessionUri[2] == "data") {
-                    return dataApiHandler(uriSegment)
+                    return dataApiHandler(sessionUri)
 
                 }
             }
         }
-        return newFixedLengthResponse("")
+        return newFixedLengthResponse("api was unable to handle your request")
     }
 
 
-    fun viewApiHandler(aUri: Array<String>): NanoHTTPD.Response {
-        if (aUri[0] == "display") {
-            if (aUri[1] == "off") {
-                viewInterface.displayOnOff(false)
-            } else {
-                viewInterface.displayOnOff(true)
+    fun viewApiHandler(aUri: Array<String>): Response {
+        var startIndex = aUri.indexOf("view")
+        when(aUri[startIndex + 1]){
+
+            "display" ->{
+                if(aUri[1] == "on"){ viewInterface.requestDisplayOnOff(true)}
+                if(aUri[1] == "off"){ viewInterface.requestDisplayOnOff(false)}
             }
+
+            "text" ->{
+                if(aUri.size >= 4) {
+                    var textindex = aUri.indexOf("text")
+                    viewInterface.requestSetExceptionText(aUri[textindex + 1])
+                    return newFixedLengthResponse("set exception text to ${aUri[2]}")
+                }
+            }
+
         }
 
-        return newFixedLengthResponse("")
+
+
+        return newFixedLengthResponse("/display received")
     }
 
-    fun dataApiHandler(aUri: Array<String>): NanoHTTPD.Response {
-        if (aUri[0] == "refresh") {
-            if (aUri[1] == "currenttemp") {
-                dataInterface.refreshCurrentTemp()
-                return newFixedLengthResponse("Current temp refreshed")
-            }
+    fun dataApiHandler(aUri: Array<String>): Response {
+        var startIndex = aUri.indexOf("data")
+        when(aUri[startIndex + 1]){
+            "spotify" -> {
+                when(aUri[startIndex+2]){
+                    "clientid" ->{
+                        dataInterface.setSpotifyClientID(aUri[startIndex + 3])
+                        return newFixedLengthResponse("spotify client ID set")
+                    }
 
+                    "clientsecret" ->{
+                        dataInterface.setSpotifyClientSecret(aUri[startIndex + 3])
+                        return newFixedLengthResponse("spotify client Secret set")
+                    }
+
+                    "authcode" ->{
+                        dataInterface.setSpotifyAuthCode(aUri[startIndex + 3])
+                        return newFixedLengthResponse("spotify authCode set")
+                    }
+
+                    "getauthuri" ->{
+                        var uri = dataInterface.requestSpotifyAuthURI()
+                        if(uri != null){
+                            return newFixedLengthResponse(uri.toString())
+                        }
+                        return newFixedLengthResponse("client ID or client Secret is not set")
+
+                    }
+
+
+
+
+                }
+
+
+            }
         }
+
+
         return newFixedLengthResponse("")
     }
 
