@@ -1,5 +1,6 @@
 package com.kushcabbage.friday_android
 
+import com.google.gson.Gson
 import java.io.IOException
 
 import fi.iki.elonen.NanoHTTPD
@@ -105,7 +106,12 @@ constructor(private val viewInterface: IApiMVC.ViewOps, private val dataInterfac
                             return newFixedLengthResponse(uri.toString())
                         }
                         return newFixedLengthResponse("client ID or client Secret is not set")
+                    }
 
+                    "data" ->{
+                        var data = dataInterface.spotifyData
+                        var json = Gson().toJson(data)
+                        return newFixedLengthResponse("$json")
                     }
 
 

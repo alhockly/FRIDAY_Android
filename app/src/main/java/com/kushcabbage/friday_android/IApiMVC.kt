@@ -17,5 +17,6 @@ interface IApiMVC {
         fun setSpotifyClientSecret(token : String)
         fun setSpotifyAuthCode(token : String)
         fun requestSpotifyAuthURI() : URI?
+        var spotifyData : DataClass.spotifyApi
     }
 }

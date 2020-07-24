@@ -16,7 +16,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
-import androidx.multidex.MultiDex
+
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.kushcabbage.friday_android.databinding.ActivityMainBinding
@@ -94,10 +94,7 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
 
     }
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
-    }
+
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

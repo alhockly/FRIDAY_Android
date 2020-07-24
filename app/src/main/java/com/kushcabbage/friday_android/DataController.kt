@@ -1,33 +1,67 @@
 package com.kushcabbage.friday_android
 
-import Spotify
+import android.content.Context
+import com.google.gson.Gson
 import com.kushcabbage.friday_android.AsyncTasks.AccuweatherCurrentWeatherAsyncTask
+import com.spotify.sdk.android.auth.AuthorizationResponse
 import java.net.URI
+import kotlin.reflect.KClass
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 class DataController(UiModify: IModifyUI, spotifyObj : Spotify = Spotify()) : IApiMVC.DataControllerOps {
 
-    companion object{
-        var spotifyData = DataClass.spotifyApi(null,null,null,null,null)
-    }
 
-    init{
-        //TODO read from prefs into companion objects
-    }
+        var spotifyPrefsKey = "PREFS_SPOTIFY"
+        var userPrefsKey = "PREFS_DATA"
+        override var spotifyData = DataClass.spotifyApi(null,null,null,null,null)
+
 
     var iModifyUI = UiModify
-    var spotifyObj = spotifyObj
+    var spotify = spotifyObj
 
+    init{
+
+        var spotify = spotifyObjFromPrefs()
+        if(spotify!= null){
+            spotifyData = spotify
+        }
+    }
+
+
+
+    fun spotifyObjFromPrefs() : DataClass.spotifyApi? {
+        var userPrefs =iModifyUI.context.getSharedPreferences(userPrefsKey,Context.MODE_PRIVATE)
+        var json = userPrefs.getString(spotifyPrefsKey,null)
+        return Gson().fromJson(json, DataClass.spotifyApi::class.java)
+    }
+
+    fun saveSpotifyDataToPrefs(){
+        var prefs =iModifyUI.context.getSharedPreferences(userPrefsKey,Context.MODE_PRIVATE).edit()
+        prefs.putString(spotifyPrefsKey, Gson().toJson(spotifyData))
+        prefs.commit()
+    }
+
+//    fun <T : Any> readSerializableFromPrefs(key : String, clazz : KClass<T> ) : KClass<T>? {
+////        var prefs =iModifyUI.context.getSharedPreferences(userPrefsKey,Context.MODE_PRIVATE)
+////        var json = prefs.getString(key,"")
+////        return Gson().fromJson(json,clazz::class)
+//    }
+
+    ///API Interface
     override fun refreshCurrentTemp() {
-
         AccuweatherCurrentWeatherAsyncTask(Util.apiKeyMap[Util.ACCUWEATHER_APIKEY_NAME].toString(), Util.apiKeyMap[Util.ACCUWEATHER_LOCATIONKEY_NAME].toString(), iModifyUI).execute()
     }
 
+
     override fun setSpotifyClientID(token: String) {
         spotifyData.clientID = token
+        saveSpotifyDataToPrefs()
     }
 
     override fun setSpotifyClientSecret(token: String) {
         spotifyData.clientSecret = token
+        saveSpotifyDataToPrefs()
     }
 
     override fun setSpotifyAuthCode(token: String) {
@@ -36,10 +70,13 @@ class DataController(UiModify: IModifyUI, spotifyObj : Spotify = Spotify()) : IA
 
     override fun requestSpotifyAuthURI(): URI? {
         if(spotifyData.clientID != null && spotifyData.clientSecret != null){
-            return spotifyObj.getAuthPageUrl(spotifyData.clientID!!, spotifyData.clientSecret!!)
+            var p = spotify.getAuthenticationRequest(AuthorizationResponse.Type.CODE, spotifyData.clientID!!)
+            return URI.create("fd") //spotifyObj.getAuthPageUrl(spotifyData.clientID!!, spotifyData.clientSecret!!)
         }
         return null
     }
 
 
+
+    //////////////////
 }
