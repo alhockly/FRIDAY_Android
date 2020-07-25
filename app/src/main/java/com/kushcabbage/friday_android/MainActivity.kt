@@ -24,6 +24,7 @@ import com.kushcabbage.friday_android.gsonParsers.GsonCurrentWeatherParser
 import com.kushcabbage.friday_android.gsonParsers.GsonSongKickParser
 import com.kushcabbage.friday_android.gsonParsers.GsonWeatherForecastParser
 import com.kushcabbage.friday_android.views.SongKickRecyclerSpacer
+import com.spotify.sdk.android.auth.AuthorizationClient
 
 import java.io.File
 import java.io.IOException
@@ -57,7 +58,8 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         iTimeBasedExecutor = TimeBasedExecutor(this, this)
-        database = DataController(this)
+        var spotify = Spotify(this)
+        database = DataController(this, spotify)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         val filter = IntentFilter(Intent.ACTION_TIME_TICK)
         registerReceiver(iTimeBasedExecutor, filter)
@@ -95,6 +97,11 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
     }
 
 
+     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val response = AuthorizationClient.getResponse(resultCode, data)
+         print(response)
+    }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -307,12 +314,7 @@ class MainActivity : Activity(), IModifyUI, RecognitionListener, IKeyPass, IUpda
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-        Log.d("Debug", result.toString())
 
-    }
 
     override fun onResult(hypothesis: Hypothesis?) {
         if (hypothesis != null) {

@@ -1,22 +1,25 @@
 package com.kushcabbage.friday_android
 
+import android.app.Activity
+import android.content.Intent
+import com.kushcabbage.friday_android.AsyncTasks.SpotifyGetNowPlaying
+import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
 
 
-class Spotify {
+class Spotify(activity: Activity) {
 
-    var redirectUrl = "localhost"
+    var redirectUrl = "http://localhost/"
+    var act= activity
 
-    init{
 
-    }
+   fun getNowPlaying(accessToken : String){
 
-    fun getAuthenticationRequest(type: AuthorizationResponse.Type,clientId : String): AuthorizationRequest? {
-        return AuthorizationRequest.Builder(clientId, type, redirectUrl)
-                .setShowDialog(false)
-                .setScopes(arrayOf("user-read-email"))
-                .setCampaign("your-campaign-token")
-                .build()
-    }
+        SpotifyGetNowPlaying(accessToken).execute()
+   }
+
+
+
+
 }

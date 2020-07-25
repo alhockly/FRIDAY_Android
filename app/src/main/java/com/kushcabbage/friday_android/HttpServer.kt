@@ -1,9 +1,8 @@
 package com.kushcabbage.friday_android
 
 import com.google.gson.Gson
-import java.io.IOException
-
 import fi.iki.elonen.NanoHTTPD
+import java.io.IOException
 
 /*api definition
  *
@@ -100,13 +99,12 @@ constructor(private val viewInterface: IApiMVC.ViewOps, private val dataInterfac
                         return newFixedLengthResponse("spotify authCode set")
                     }
 
-                    "getauthuri" ->{
-                        var uri = dataInterface.requestSpotifyAuthURI()
-                        if(uri != null){
-                            return newFixedLengthResponse(uri.toString())
-                        }
-                        return newFixedLengthResponse("client ID or client Secret is not set")
+                    "accesstoken" ->{
+                        dataInterface.setSpotifyAccessToken(aUri[startIndex + 3])
+                        return newFixedLengthResponse("spotify access Token set")
                     }
+
+
 
                     "data" ->{
                         var data = dataInterface.spotifyData
@@ -115,6 +113,10 @@ constructor(private val viewInterface: IApiMVC.ViewOps, private val dataInterfac
                     }
 
 
+                    "update" -> {
+                        dataInterface.requestSpotifyDisplayUpdate()
+                        return newFixedLengthResponse("updating spotify info")
+                    }
 
 
                 }
@@ -149,3 +151,17 @@ constructor(private val viewInterface: IApiMVC.ViewOps, private val dataInterfac
         }
     }
 }
+
+
+//class Server(port: Int) : NanoHTTPD(port) {
+//    override fun serve(session: IHTTPSession?): Response {}
+//
+//    init {
+//        val keyStore: KeyStore = KeyStore.getInstance(KeyStore.getDefaultType())
+//        val keyStoreStream: InputStream = context.get().getAssets().open("keystore.bks")
+//        keyStore.load(keyStoreStream, "myKeyStorePass".toCharArray())
+//        val keyManagerFactory: KeyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
+//        keyManagerFactory.init(keyStore, "myCertificatePass".toCharArray())
+//        makeSecure(makeSSLSocketFactory(keyStore, keyManagerFactory), null)
+//    }
+//}

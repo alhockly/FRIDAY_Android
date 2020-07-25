@@ -3,18 +3,19 @@ package com.kushcabbage.friday_android
 import android.content.Context
 import com.google.gson.Gson
 import com.kushcabbage.friday_android.AsyncTasks.AccuweatherCurrentWeatherAsyncTask
+import com.kushcabbage.friday_android.AsyncTasks.SpotifyRequestAccessToken
 import com.spotify.sdk.android.auth.AuthorizationResponse
 import java.net.URI
 import kotlin.reflect.KClass
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
-class DataController(UiModify: IModifyUI, spotifyObj : Spotify = Spotify()) : IApiMVC.DataControllerOps {
+class DataController(UiModify: IModifyUI, spotifyObj : Spotify) : IApiMVC.DataControllerOps {
 
 
         var spotifyPrefsKey = "PREFS_SPOTIFY"
         var userPrefsKey = "PREFS_DATA"
-        override var spotifyData = DataClass.spotifyApi(null,null,null,null,null)
+        override var spotifyData = DataClass.spotifyApi(null,null,null,null,null, spotifyObj.redirectUrl)
 
 
     var iModifyUI = UiModify
@@ -66,16 +67,22 @@ class DataController(UiModify: IModifyUI, spotifyObj : Spotify = Spotify()) : IA
 
     override fun setSpotifyAuthCode(token: String) {
         spotifyData.authCode = token
+        saveSpotifyDataToPrefs()
+        SpotifyRequestAccessToken(spotifyData).execute()
     }
 
-    override fun requestSpotifyAuthURI(): URI? {
-        if(spotifyData.clientID != null && spotifyData.clientSecret != null){
-            var p = spotify.getAuthenticationRequest(AuthorizationResponse.Type.CODE, spotifyData.clientID!!)
-            return URI.create("fd") //spotifyObj.getAuthPageUrl(spotifyData.clientID!!, spotifyData.clientSecret!!)
+    override fun setSpotifyAccessToken(token: String) {
+        spotifyData.accessToken = token
+        saveSpotifyDataToPrefs()
+    }
+
+
+
+    override fun requestSpotifyDisplayUpdate() {
+        if(spotifyData.accessToken != null) {
+            spotify.getNowPlaying(spotifyData.accessToken!!)
         }
-        return null
     }
-
 
 
     //////////////////
